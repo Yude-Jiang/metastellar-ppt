@@ -1,0 +1,8 @@
+**/__pycache__/
+**/*.pyc
+workspace_template/output/*
+!workspace_template/output/.keep
+.git/
+.venv/
+*.md.banner.png
+README.md
