@@ -167,7 +167,7 @@
 
       <div class="toggle" id="chatToggle">
         <span class="track" id="track"><span class="knob"></span></span>
-        <span class="tx"><b>对话模式</b><span>来回确认、逐页修改后再生成（Beta）</span></span>
+        <span class="tx"><b>对话模式</b><span>先出大纲、补充信息，确认后再生成（Beta）</span></span>
       </div>
 
       <button type="button" class="cta" id="go"><span>生成 PPT</span></button>
@@ -203,7 +203,7 @@
 
       <div class="followup" id="chatbox">
         <h3>继续对话</h3>
-        <textarea id="chatmsg" placeholder="确认方案 / 补充要求 / 修改第 2 页…"></textarea>
+        <textarea id="chatmsg" placeholder="补充信息 / 修改大纲… 确认后输入「确认」或 OK 开始生成"></textarea>
         <div class="row"><button type="button" id="sendChat">发送</button><span class="st" id="chatstatus"></span></div>
       </div>
     </div>
@@ -290,7 +290,7 @@ $('#chips').querySelectorAll('.chip').forEach(c => {
 
 function syncChatToggle() {
   $('#track').classList.toggle('on', chatActive);
-  const label = chatActive ? '开始对话' : '生成 PPT';
+  const label = chatActive ? '开始讨论' : '生成 PPT';
   if (!abortCtl) $('#go').querySelector('span').textContent = label;
 }
 
@@ -424,6 +424,7 @@ function renderResult(r) {
     dl.appendChild(a);
   }
   if (r.deck || (r.previews && r.previews.length)) showPhase('done');
+  else if (chatActive && currentSession) showPhase('run'); // keep log visible after planning turn
   $('#edit').style.display = (!chatActive && r.deck) ? 'block' : 'none';
   $('#chatbox').style.display = (chatActive && currentSession) ? 'block' : 'none';
 }
@@ -460,7 +461,7 @@ function setBusy(running) {
   } else {
     go.classList.remove('stop');
     go.disabled = false;
-    go.querySelector('span').textContent = chatActive ? '开始对话' : '生成 PPT';
+    go.querySelector('span').textContent = chatActive ? '开始讨论' : '生成 PPT';
   }
 }
 

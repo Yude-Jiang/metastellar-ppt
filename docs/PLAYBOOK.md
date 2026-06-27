@@ -58,7 +58,7 @@ workspace_template/
 ### 2.3 双模式产品策略
 
 - **默认一次性（One-shot）**：无人值守、直接出稿 → 适合约 90% 内部场景
-- **对话模式标 Beta**：需 `--max-instances 1`、内存态 agent、重启丢上下文 → 文档写清楚，不作为主路径
+- **对话模式标 Beta**：首轮规划（大纲 + 追问），用户确认后再 BUILD；需 `--max-instances 1`、内存态 agent、重启丢上下文 → 文档写清楚，不作为主路径
 
 **经验：** 先 ship 一次性；对话等有外部 session store 再做。
 

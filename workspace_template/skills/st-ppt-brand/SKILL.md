@@ -107,10 +107,12 @@ inventing one — they are already brand-compliant. Quick menu (full detail + an
 | Portfolio / overview of image tiles | `image-grid-2x3-caption-bars` |
 | Sequential N-step process | `process-flow-circles` |
 | Label → asset → annotation toward a visual | `row-label-table-visual` |
-| Evolution over time | `timeline-era-cards` |
+| Evolution over time (era cards + photo strip) | `timeline-era-cards` |
+| Product launch / campaign Gantt (organic + paid + product lanes) | `timeline-organic-paid-lanes` |
+| MCU activation plan (content assets + promotion lanes) | `timeline-content-promotion-lanes` |
 
 All archetypes sit on the **"Title Only"** layout and obey the 2–3 color rule. Builders for the
-recurring families are in `references/pptx-implementation.md`.
+recurring families are in `references/pptx-implementation.md` and `st_brand.py`.
 
 ## Visuals — hard constraints
 - **Never use AI-generated images** (company policy — including ST ChatGPT output). Use
@@ -123,8 +125,10 @@ recurring families are in `references/pptx-implementation.md`.
 ## Reference files (read when relevant)
 - `references/brand-spec.md` — full color table (incl. shading ramp/contrast rules) and the
   complete typography spec.
-- `references/layout-library.md` — the 11 content-layout archetypes (when to use, anatomy,
+- `references/layout-library.md` — the 13 content-layout archetypes (when to use, anatomy,
   color spec) plus a layout picker. **Read this whenever choosing how to lay out a content slide.**
+  Reference images for campaign timelines: `references/timeline-organic-paid-lanes.png`,
+  `references/timeline-content-promotion-lanes.png`.
 - `references/layout-rules.md` — layout selection ("Title Only" everywhere except special
   slides), message bar, title area, footer/footnotes, text-box best practices, images.
 - `references/compliance-checklist.md` — do/don't summary + pre-share housecleaning

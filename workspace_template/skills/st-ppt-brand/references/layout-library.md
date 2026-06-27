@@ -29,7 +29,9 @@ as shapes.
 | A portfolio/overview of 4–6 image tiles | `image-grid-2x3-caption-bars` |
 | A sequential N-step process | `process-flow-circles` |
 | Rows of label → content → annotation, pointing at a visual | `row-label-table-visual` |
-| Evolution over time | `timeline-era-cards` |
+| Evolution over time (era cards + photo strip) | `timeline-era-cards` |
+| Product launch / campaign Gantt (organic + paid + product lanes) | `timeline-organic-paid-lanes` |
+| MCU activation plan (content assets + promotion lanes) | `timeline-content-promotion-lanes` |
 
 ---
 
@@ -119,6 +121,65 @@ available!"), ST Dark Blue text, bold key words. Use when the cards build to one
 - **Photo strip**: one image per era aligned to the columns at the bottom.
 - Use for market evolution, roadmap history, generational progress.
 
+## 12. `timeline-organic-paid-lanes` — campaign / launch Gantt
+**Use for:** product-launch or annual campaign roadmaps with distinct organic, paid, and
+product-focus tracks (e.g. Stellar P3E 2026 plan).
+
+**Reference:** [timeline-organic-paid-lanes.png](timeline-organic-paid-lanes.png)
+
+**Structure (top → bottom, 3 horizontal lanes):**
+
+1. **Organic lane** — activity boxes above the axis, each linked to a date marker by a thin
+   ST Dark Blue vertical connector. Box = ST Dark Blue header (white bold) + gray `#EEEFF1`
+   body (dark-blue bullets). One box per milestone; larger box for major launch events.
+2. **Central timeline axis** — thick ST Dark Blue right-pointing arrow spanning the slide;
+   **yellow circle** markers on the axis at each date; date labels below markers (Arial 12–14 pt,
+   ST Dark Blue). Use **double vertical white break lines** when the timeline skips months
+   (e.g. Jan–Mar → December).
+3. **Paid lane** — ST Light Blue horizontal bar(s) below the axis showing campaign duration
+   spans (e.g. "Paid Social 11-Feb→10-Mar"); light-blue caption for always-on channels below.
+4. **Product-focus bar** — bottom segmented ST Light Blue arrow; each segment = one product
+   focus period; separate segments with double vertical break lines.
+
+**Colors:** ST Dark Blue (axis, connectors, organic headers), ST Yellow (date markers),
+ST Light Blue (paid bars, product-focus arrow), Gray 1 (box bodies). Max 3 colors per region.
+
+**Message bar:** e.g. "2026 campaign timeline — organic, paid, and product focus."
+
+## 13. `timeline-content-promotion-lanes` — MCU / activation plan
+**Use for:** MCU / software activation plans with parallel content-asset and promotion
+tracks (e.g. STM32C5 activation plan).
+
+**Reference:** [timeline-content-promotion-lanes.png](timeline-content-promotion-lanes.png)
+
+**Structure (top → bottom, 2 horizontal lanes + legend):**
+
+1. **Legend row** (top-right or below title) — small swatches:
+   - ST Yellow fill = highlighted track item (e.g. Cube2-related)
+   - Gray 2 `#DBDEE1` = TBC / unconfirmed
+   - Green accent marker = key milestone (e.g. MML)
+2. **Content Assets lane** — left column: vertical list of deliverables (press release, webpages,
+   blog, video, flyer, etc.) with small icons; right: milestone boxes on timeline — yellow boxes
+   for gated publications (e.g. "Cube2 ready: Community developer news"); week labels (W11, W23)
+   for delivery vs publication.
+3. **Central timeline axis** — ST Dark Blue horizontal line with month/date tick labels
+   (Feb 10th, Mar 5th, Mar 10th … June); vertical tick marks at each date.
+4. **Promotion lane** — event items below axis: icon + label per activity (blog, banner, webinar,
+   enews, e-store, ads). Group by month. **Duration campaigns** = long horizontal bar/arrow
+   (ST Light Blue or approved accent) spanning start→end months (e.g. Google + Social ads
+   Apr→Jun). Yellow-background items = same highlight as legend.
+
+**Lane labels:** "CONTENT ASSETS" and "PROMOTION" in ST Dark Blue bold, left-aligned above
+each lane.
+
+**Colors:** ST Dark Blue (axis, labels), ST Yellow (highlight boxes/items), Gray 1–2 (TBC items),
+ST Light Blue (campaign duration bars). Avoid magenta/green except the single MML marker.
+
+**Message bar:** e.g. "STM32C5 activation plan — content assets and promotion timeline."
+
+**Builder:** prefer `st_brand.add_activation_timeline(...)` or `timeline_template_slide(...)` —
+see `pptx-implementation.md`.
+
 ---
 
 ## Applying any of these
@@ -131,4 +192,5 @@ available!"), ST Dark Blue text, bold key words. Use when the cards build to one
 5. Maintain image **aspect ratio**; align card edges with the grid/guides.
 
 Parametrized python-pptx builders for the recurring families (`cards-Nup`,
-`product-comparison-2up`, `process-flow-circles`) are in `pptx-implementation.md`.
+`product-comparison-2up`, `process-flow-circles`, `timeline-content-promotion-lanes`,
+`timeline-organic-paid-lanes`) are in `pptx-implementation.md` and `st_brand.py`.

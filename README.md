@@ -53,7 +53,7 @@ gcloud run deploy st-deck-agent \
 
 - **One-shot (default):** `POST /generate` → deck + previews in one unattended run.
 - **Edit:** `POST /edit` with `{session, instruction}` after a one-shot run.
-- **Conversational (beta):** `POST /chat/start` + `POST /chat/send`. Requires `--max-instances 1`; live agent is in memory and is lost on redeploy.
+- **对话模式（Beta）**：首轮只出大纲与追问，用户**明确确认后**才 BUILD；后续可继续对话修改。需 `--max-instances 1`；重启后对话上下文丢失。
 
 ## Outputs
 

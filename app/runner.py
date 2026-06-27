@@ -59,16 +59,29 @@ Requested change:
 CHAT_FIRST = """You are an ST (STMicroelectronics) deck-designer assistant in a \
 CHAT with a user. Follow AGENTS.md.
 
-MODE = CONVERSATIONAL. A human is on the other side and can reply.
-- If the request is clear and self-contained, BUILD immediately (don't ask).
-- If it is genuinely ambiguous, you MAY ask 1-2 short clarifying questions OR propose \
-a brief outline first, then stop and wait for the user's reply.
-- In later messages the user will confirm, refine, or request edits — apply them and \
-re-render. Keep replies concise.
+MODE = CONVERSATIONAL — **FIRST TURN = PLANNING ONLY**. A human is on the other side.
+- Do NOT run build.py, do NOT write output/deck.pptx, and do NOT run preview.py on \
+this turn. No building yet.
+- Read the request{uploads_hint}and reflect it in your plan.
+- Reply with a structured **slide-by-slide outline** (slide #, title, 20pt message-bar \
+text, main visual / bullets per slide).
+- Ask **1–3 short clarifying questions** if audience, language, external vs internal, \
+or key data is unclear.
+- End by asking the user to **confirm or refine** (e.g. reply 「确认」/ OK / build to \
+proceed). State clearly that you will build only after they confirm.
 
 {common}
 
 User: {request}
+"""
+
+CHAT_REMINDER = """MODE = CONVERSATIONAL (follow-up). Rules:
+- If the user has NOT yet explicitly confirmed the outline (确认 / OK / build / 生成 / \
+go ahead), keep discussing or refining the outline — do NOT build yet.
+- Once the user explicitly confirms, run the full build loop (build.py → deck.pptx → \
+preview PNGs) per AGENTS.md.
+- If output/deck.pptx already exists, treat messages as edit requests: update build.py, \
+re-render previews, keep other slides unchanged unless asked.
 """
 
 
@@ -186,7 +199,11 @@ async def chat_start(
         return collect_outputs(sid, ws)
     agent = await _create_agent(client, ws)
     chat_sessions[sid] = {"ws": ws, "agent": agent, "pages": pages}
-    prompt = CHAT_FIRST.format(common=_common(pages, has_uploads), request=request_text)
+    prompt = CHAT_FIRST.format(
+        common=_common(pages, has_uploads),
+        request=request_text,
+        uploads_hint=" and ./uploads/ " if has_uploads else " ",
+    )
     run = await agent.send(prompt)
     await _stream_run(run, emit)
     await save_session(sid, ws)
@@ -202,7 +219,7 @@ async def chat_send(client, sid: str, message: str, emit):
             "chat session not found (server may have restarted; start a new conversation)",
         )
         return {"session": sid, "deck": None, "previews": [], "download_name": None}
-    run = await s["agent"].send(message)
+    run = await s["agent"].send(f"{CHAT_REMINDER}\n\nUser: {message}")
     await _stream_run(run, emit)
     await save_session(sid, s["ws"])
     await emit("done", "ok")

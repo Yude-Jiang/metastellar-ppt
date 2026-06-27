@@ -237,6 +237,76 @@ def dashed_container(slide, x, y, w, h, color=SLATE):
     return sh
 
 
+def add_activation_timeline(
+    slide,
+    checkpoints,
+    top_items=None,
+    bottom_items=None,
+    x0=0.55,
+    x1=12.8,
+    y_line=3.95,
+):
+    """Draw a 2-lane activation timeline similar to GTM launch plans.
+
+    checkpoints: [{"x": 2.4, "label": "Mar 5"}, ...]
+    top_items / bottom_items:
+      [{"x": 2.6, "title": "Milestone", "note": "optional", "w": 2.0, "color": ST_YELLOW}, ...]
+    """
+    top_items = top_items or []
+    bottom_items = bottom_items or []
+
+    # Main axis
+    arrow(slide, x0, y_line, x1, y_line, color=ST_DARK_BLUE, width=2.2)
+
+    # Lane labels
+    box(slide, 0.0, y_line - 1.55, 0.42, 1.42, "CONTENT", ST_DARK_BLUE, WHITE, size=10)
+    box(slide, 0.0, y_line + 0.15, 0.42, 1.42, "PROMO", ST_DARK_BLUE, WHITE, size=10)
+
+    # Checkpoints on axis
+    for cp in checkpoints:
+        x = cp["x"]
+        dot = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x - 0.08), Inches(y_line - 0.08),
+                                     Inches(0.16), Inches(0.16))
+        fill(dot, WHITE)
+        dot.line.color.rgb = ST_DARK_BLUE
+        dot.line.width = Pt(1.5)
+        if cp.get("label"):
+            label(slide, x - 0.35, y_line - 0.42, 0.8, cp["label"], color=ST_DARK_BLUE,
+                  size=10, bold=False, align=PP_ALIGN.CENTER)
+
+    # Activity cards above axis
+    for i, item in enumerate(top_items):
+        w = item.get("w", 2.0)
+        h = 0.5 if not item.get("note") else 0.82
+        y = y_line - 1.2 - (0.62 * (i % 2))
+        fc = item.get("color", ST_YELLOW)
+        tc = text_on(fc)
+        box(slide, item["x"] - w / 2, y, w, h, item["title"], fc, tc, size=11,
+            align=PP_ALIGN.LEFT, sub=item.get("note"), sub_size=10)
+        arrow(slide, item["x"], y + h, item["x"], y_line - 0.12, color=GRAY_3, width=1.2)
+
+    # Activity cards below axis
+    for i, item in enumerate(bottom_items):
+        w = item.get("w", 2.0)
+        h = 0.5 if not item.get("note") else 0.82
+        y = y_line + 0.26 + (0.62 * (i % 2))
+        fc = item.get("color", GRAY_1)
+        tc = text_on(fc)
+        box(slide, item["x"] - w / 2, y, w, h, item["title"], fc, tc, size=11,
+            align=PP_ALIGN.LEFT, sub=item.get("note"), sub_size=10)
+        arrow(slide, item["x"], y, item["x"], y_line + 0.12, color=GRAY_3, width=1.2)
+
+
+def timeline_template_slide(prs, title, message, checkpoints, top_items=None, bottom_items=None):
+    """One-call template: title + message bar + 2-lane timeline."""
+    slide = title_only_slide(prs)
+    corner_accent(slide)
+    add_title(slide, title, align=PP_ALIGN.RIGHT, size=TITLE_SIZE + 2)
+    add_message_bar(slide, message, fill_color=ST_LIGHT_BLUE)
+    add_activation_timeline(slide, checkpoints, top_items=top_items, bottom_items=bottom_items)
+    return slide
+
+
 def add_cards_row(slide, cards, top=2.5, bottom=6.95, gap=0.4, left_margin=0.45,
                   header="yellow", img_ratio=2.35):
     """cards = [{"title", "bullets":[...], "img": path|None}].

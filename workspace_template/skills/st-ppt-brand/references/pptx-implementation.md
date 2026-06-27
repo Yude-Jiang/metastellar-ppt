@@ -139,8 +139,8 @@ footer band carrying `TRADEMARK` (small white Arial) and the ST logo bottom-righ
 
 ## Layout-library builders
 These cover the recurring families in `layout-library.md`. The others (quadrant, image grid,
-timeline, row-label table) compose from the same primitives: `fill`, `add_shape`, a card =
-header bar + image + gray box.
+`timeline-era-cards`, row-label table) compose from the same primitives: `fill`, `add_shape`, a card =
+header bar + image + gray box. Campaign timelines (#12–#13) use `st_brand.py` helpers.
 
 ### `cards-Nup` — N cards: header + image + bullet box (covers #4, #5, #6, #11 card rows)
 ```python
@@ -233,6 +233,48 @@ def add_process_flow(slide, steps, cy=4.1, d=1.9):
         fill(dot, ST_YELLOW)
 ```
 Add the connecting dotted line and "Step N" caption text boxes alongside as needed.
+
+### `timeline-content-promotion-lanes` (covers #13)
+Use the ready-made builder in `st_brand.py`:
+
+```python
+from st_brand import new_deck, title_only_slide, corner_accent, add_title, add_message_bar
+from st_brand import add_activation_timeline, timeline_template_slide
+
+# One-call slide: title + message bar + 2-lane timeline
+timeline_template_slide(
+    prs,
+    title="STM32C5 activation plan",
+    message="Content assets and promotion timeline",
+    checkpoints=[{"x": 2.4, "label": "Mar 5"}, {"x": 5.2, "label": "Apr 1"}],
+    top_items=[{"x": 2.6, "title": "Cube2 ready", "note": "Community news", "color": ST_YELLOW}],
+    bottom_items=[{"x": 4.8, "title": "Webinar", "note": "Apr launch"}],
+)
+```
+
+`add_activation_timeline` draws the ST Dark Blue axis, lane labels ("CONTENT" / "PROMO"),
+date checkpoints, and milestone boxes above/below the axis. Yellow boxes = highlighted items;
+gray boxes = TBC or secondary items.
+
+### `timeline-organic-paid-lanes` (covers #12)
+Compose from `st_brand` primitives (`arrow`, `box`, `label`, `bullet_box`):
+
+```python
+def add_timeline_axis(slide, y_in, x0=0.8, x1=12.5):
+    """ST Dark Blue arrow axis with yellow date markers."""
+    arrow(slide, x0, y_in, x1, y_in, color=ST_DARK_BLUE, width=2.2)
+
+def add_date_marker(slide, x_in, y_in, date_label, r=0.12):
+    c = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x_in - r), Inches(y_in - r),
+                               Inches(2*r), Inches(2*r))
+    fill(c, ST_YELLOW)
+    label(slide, x_in - 0.35, y_in + 0.12, 0.8, date_label, color=ST_DARK_BLUE, size=12)
+```
+
+For `timeline-organic-paid-lanes`: place organic boxes above `y_in`, paid span bars
+~0.3 in below, product-focus segmented arrow at bottom (~6.5 in). Use double vertical
+white break lines when the timeline skips months. Build from rectangles, arrows, and
+circles — never SmartArt or external Gantt screenshots.
 
 ## Reminders the code can't enforce — verify by eye
 - **2–3 colors per slide**; large areas use primary colors.
