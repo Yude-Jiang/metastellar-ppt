@@ -239,11 +239,22 @@ function saveChatMode() {
   try { localStorage.setItem(LS_CHAT, chatActive ? '1' : '0'); } catch (_) {}
 }
 
+function authToken() {
+  return ($('#token').value || '').trim() || localStorage.getItem(LS_TOKEN) || '';
+}
+
 function authHeaders() {
   const h = {};
-  const t = ($('#token').value || '').trim() || localStorage.getItem(LS_TOKEN) || '';
+  const t = authToken();
   if (t) h['X-Access-Token'] = t;
   return h;
+}
+
+function fileUrl(path) {
+  let u = path;
+  const t = authToken();
+  if (t) u += (u.includes('?') ? '&' : '?') + 'access_token=' + encodeURIComponent(t);
+  return u + (u.includes('?') ? '&' : '?') + 't=' + Date.now();
 }
 
 function saveToken() {
@@ -407,7 +418,7 @@ function renderResult(r) {
   slides.innerHTML = '';
   (r.previews || []).forEach((url, i) => {
     const img = document.createElement('img');
-    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    img.src = fileUrl(url);
     img.alt = 'slide ' + (i + 1);
     slides.appendChild(img);
   });
@@ -417,7 +428,7 @@ function renderResult(r) {
   if (r.deck) {
     const a = document.createElement('a');
     a.className = 'dl';
-    a.href = r.deck;
+    a.href = fileUrl(r.deck);
     const fn = r.download_name || 'deck.pptx';
     a.download = fn;
     a.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#03234B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg> 下载 ' + fn;

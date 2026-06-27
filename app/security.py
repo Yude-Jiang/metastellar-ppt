@@ -42,7 +42,8 @@ def _extract_token(request: Request) -> str:
     auth = request.headers.get("authorization", "")
     if auth.lower().startswith("bearer "):
         return auth[7:].strip()
-    return ""
+    # img/a tags cannot send custom headers; file previews/downloads use query param.
+    return request.query_params.get("access_token", "").strip()
 
 
 def verify_access(request: Request) -> str | None:

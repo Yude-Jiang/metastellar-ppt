@@ -4,7 +4,8 @@ Modes:
   One-shot (default):  POST /generate (multipart)  +  POST /edit (json)
   Conversational:      POST /chat/start (multipart) +  POST /chat/send (json)
 
-Set ACCESS_TOKEN to require X-Access-Token on mutating routes and file downloads.
+Set ACCESS_TOKEN to require X-Access-Token (or ?access_token= for file URLs) on
+mutating routes and file downloads.
 Conversational mode keeps a live agent in memory — pin to --max-instances 1.
 """
 from __future__ import annotations
