@@ -27,10 +27,12 @@
   .dot{width:7px;height:7px;border-radius:50%;background:#46d39a;box-shadow:0 0 0 3px rgba(70,211,154,.18);}
   #tokenRow{display:none;align-items:center;gap:8px;font-size:12px;color:#9BB8D0;}
   #tokenRow input{padding:6px 10px;border:0;border-radius:6px;font-size:12px;min-width:140px;}
-  .hdr-lang{display:flex;align-items:center;gap:4px;}
-  .hdr-lang button{padding:4px 9px;border:1px solid #3A5A7A;background:transparent;color:#9BB8D0;border-radius:5px;font-size:11px;font-weight:bold;cursor:pointer;transition:.15s;line-height:1.2;}
-  .hdr-lang button:hover{border-color:#7FA8C9;color:#C8D9EA;}
-  .hdr-lang button.on{border-color:var(--yellow);background:rgba(255,210,0,.12);color:var(--yellow);}
+  .hdr-lang-wrap{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:4px 10px 4px 8px;}
+  .hdr-lang-icon{display:flex;align-items:center;color:#8FA8BE;flex:none;line-height:0;}
+  .hdr-lang{display:flex;align-items:center;gap:2px;}
+  .hdr-lang button{padding:5px 12px;border:0;background:transparent;color:#9BB8D0;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,color .15s,box-shadow .15s;line-height:1.25;white-space:nowrap;}
+  .hdr-lang button:hover{color:#D5E4F0;}
+  .hdr-lang button.on{background:#fff;color:var(--navy);font-weight:bold;box-shadow:0 1px 4px rgba(0,0,0,.18);}
 
   main{width:100%;max-width:1280px;margin:0 auto;padding:26px 30px 40px;display:grid;grid-template-columns:minmax(360px,40%) 1fr;gap:24px;align-items:start;}
   @media (max-width:880px){ main{grid-template-columns:1fr;} header{height:auto;padding:14px 18px;} }
@@ -122,6 +124,20 @@
   .followup button:disabled{opacity:.6;cursor:default;}
   .followup .st{font-size:12px;color:var(--faint);}
   .followup .st.err{color:#C0392B;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(3,35,75,.58);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;}
+  .modal-overlay.open{display:flex;}
+  body.modal-open{overflow:hidden;}
+  .conduct-modal{background:#fff;border-radius:14px;max-width:500px;width:100%;box-shadow:0 20px 50px rgba(3,35,75,.28);overflow:hidden;}
+  .conduct-modal .mhead{background:var(--navy);color:#fff;padding:18px 22px;border-bottom:3px solid var(--yellow);}
+  .conduct-modal .mhead h2{margin:0;font-size:16px;font-weight:bold;}
+  .conduct-modal .mbody{padding:20px 22px 8px;font-size:14px;line-height:1.65;color:var(--navy);}
+  .conduct-modal .mbody ul{margin:0;padding-left:20px;}
+  .conduct-modal .mbody li{margin-bottom:12px;}
+  .conduct-modal .mbody li:last-child{margin-bottom:0;}
+  .conduct-modal .mfoot{padding:8px 22px 22px;}
+  .conduct-modal .mfoot button{width:100%;padding:13px;border:0;border-radius:9px;background:var(--navy);color:#fff;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(3,35,75,.18);}
+  .conduct-modal .mfoot button:hover{background:#021a33;}
 </style>
 </head>
 <body>
@@ -134,7 +150,14 @@
     <div id="tokenRow">
       <label><span data-i18n="tokenLabel">访问口令</span> <input id="token" type="password" placeholder="ACCESS_TOKEN" autocomplete="off"/></label>
     </div>
-    <div class="hdr-lang" id="uiLangSeg"></div>
+    <div class="hdr-lang-wrap">
+      <span class="hdr-lang-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 8h6"/><path d="M8 5v6"/><path d="M14 8h5"/><path d="M16.5 5v6"/><path d="M3 19c2.5-3 5.5-3 8-1.5S15.5 21 18 19"/><path d="M3 19h18"/>
+        </svg>
+      </span>
+      <div class="hdr-lang" id="uiLangSeg"></div>
+    </div>
     <div class="org"><span class="dot"></span>STMicroelectronics</div>
   </div>
 </header>
@@ -217,6 +240,14 @@
   </section>
 </main>
 
+<div id="conductModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="conductTitle">
+  <div class="conduct-modal">
+    <div class="mhead"><h2 id="conductTitle"></h2></div>
+    <div class="mbody"><ul id="conductList"></ul></div>
+    <div class="mfoot"><button type="button" id="conductAck"></button></div>
+  </div>
+</div>
+
 <script>
 const $ = s => document.querySelector(s);
 const LS_TOKEN = 'st_deck_token';
@@ -224,11 +255,12 @@ const LS_SESSION = 'st_deck_session';
 const LS_CHAT = 'st_deck_chat';
 const LS_UI_LANG = 'st_deck_ui_lang';
 const LS_DECK_LANG = 'st_deck_deck_lang';
+const LS_CONDUCT = 'st_deck_conduct_ack';
 
 const UI_LANG_OPTIONS = [
-  { id: 'en', label: 'En' },
-  { id: 'ja', label: '日' },
-  { id: 'zh', label: '中' },
+  { id: 'zh', label: '中文' },
+  { id: 'en', label: 'EN' },
+  { id: 'ja', label: '日本語' },
 ];
 
 const DECK_LANG_OPTIONS = [
@@ -293,6 +325,13 @@ const I18N = {
       { label: '品牌合规汇报', fill: '根据上传文档做一页 ST 品牌合规 PPT，给领导汇报，突出三个核心数据。' },
       { label: '资料浓缩 3 页', fill: '把这份产品资料浓缩成 3 页重点页，每页一个核心信息。' },
     ],
+    conductTitle: '使用须知',
+    conductBullets: [
+      '使用本工具时，须遵守 STMicroelectronics《行为准则》（Code of Conduct）。',
+      '请勿上传、粘贴或引用任何涉密、保密、受出口管制或未公开的内部资料。',
+      '仅可使用已获授权、可对外或内部非密分享的 ST 公开素材与业务内容。',
+    ],
+    conductAck: '我已阅读并同意',
   },
   en: {
     brandSub: 'Brand-compliant PPT · One-click decks',
@@ -349,6 +388,13 @@ const I18N = {
       { label: 'Brand-compliant brief', fill: 'One ST-brand slide for leadership from the upload, three key metrics.' },
       { label: '3-slide summary', fill: 'Condense this product material into 3 slides, one key message per slide.' },
     ],
+    conductTitle: 'Important notice',
+    conductBullets: [
+      'You must follow the STMicroelectronics Code of Conduct when using this tool.',
+      'Do not upload, paste, or reference confidential, classified, export-controlled, or non-public internal materials.',
+      'Use only ST-approved content that you are authorized to share — public or internal non-confidential sources only.',
+    ],
+    conductAck: 'I understand and agree',
   },
   ja: {
     brandSub: 'ブランド準拠 PPT · ワンクリック生成',
@@ -405,6 +451,13 @@ const I18N = {
       { label: 'ブランド準拠報告', fill: 'アップロード資料から ST ブランド準拠 1 枚、3 つの核心データを強調。' },
       { label: '3 枚に要約', fill: '製品資料を 3 枚に要約、各スライド 1 つの核心メッセージ。' },
     ],
+    conductTitle: 'ご利用にあたって',
+    conductBullets: [
+      '本ツールの利用にあたり、STMicroelectronics の行動規範（Code of Conduct）を遵守してください。',
+      '機密・秘密・輸出規制対象・非公開の社内資料をアップロード、貼付、参照しないでください。',
+      '公開済みまたは社内非機密として共有が許可された ST コンテンツのみを使用してください。',
+    ],
+    conductAck: '理解しました',
   },
 };
 
@@ -445,7 +498,37 @@ function applyI18n() {
   renderFiles();
   updateDoneCnt();
   syncChatToggle();
+  updateConductModal();
   if (!abortCtl) setBusy(false);
+}
+
+function conductAcked() {
+  try { return sessionStorage.getItem(LS_CONDUCT) === '1'; } catch (_) { return false; }
+}
+
+function updateConductModal() {
+  $('#conductTitle').textContent = t('conductTitle');
+  const list = $('#conductList');
+  list.innerHTML = '';
+  (I18N[uiLang] || I18N.zh).conductBullets.forEach(line => {
+    const li = document.createElement('li');
+    li.textContent = line;
+    list.appendChild(li);
+  });
+  $('#conductAck').textContent = t('conductAck');
+}
+
+function showConductModal() {
+  if (conductAcked()) return;
+  updateConductModal();
+  $('#conductModal').classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function hideConductModal() {
+  $('#conductModal').classList.remove('open');
+  document.body.classList.remove('modal-open');
+  try { sessionStorage.setItem(LS_CONDUCT, '1'); } catch (_) {}
 }
 
 function saveLang() {
@@ -787,6 +870,7 @@ async function runStream(url, opts, statusEl) {
 
 go.onclick = async () => {
   if (abortCtl) { abortCtl.abort(); return; }
+  if (!conductAcked()) { showConductModal(); return; }
   const request = $('#req').value.trim();
   if (!request && !docs.files.length) return;
   chatActive = $('#track').classList.contains('on');
@@ -828,7 +912,10 @@ $('#sendChat').onclick = async () => {
 
 loadConfig().then(() => {
   syncChatToggle();
+  showConductModal();
 });
+
+$('#conductAck').onclick = hideConductModal;
 </script>
 </body>
 </html>
