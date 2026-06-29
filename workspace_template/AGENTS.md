@@ -37,7 +37,8 @@ Follow this loop exactly (it mirrors a careful designer):
   zone, use only 2–3 colors per slide.
 - A ready-made helper is in `st_brand.py` — **prefer it**. It exposes the exact ST
   palette and builders: `new_deck`, `title_only_slide`, `corner_accent`, `add_title`,
-  `add_message_bar`, `box`, `bullet_box`, `add_cards_row`, `add_activation_timeline`,
+  `add_message_bar`, `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
+  `box`, `bullet_box`, `add_cards_row`, `add_activation_timeline`,
   `timeline_template_slide`, `arrow`, `dashed_container`, `label`, `footer`,
   `closing_slide`, and **`text_on(fill_color)`** for contrast.
 - For roadmap / GTM / campaign calendars, pick the matching layout archetype:

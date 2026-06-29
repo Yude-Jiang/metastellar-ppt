@@ -114,16 +114,31 @@ def add_shaded_box(slide, x, y, w, h, lines, shade=GRAY_1, heading=None):
 ## Section divider (navy bg + yellow bar)
 ```python
 def add_section_slide(prs, title):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])  # blank
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
     bg = slide.background.fill; bg.solid(); bg.fore_color.rgb = ST_DARK_BLUE
     bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
                                  Inches(2.2), Inches(0.9), Inches(9.0), Inches(1.2))
-    fill(bar, ST_YELLOW)
-    tf = bar.text_frame; no_autofit(tf); tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    fill(bar, ST_YELLOW); tf = bar.text_frame; no_autofit(tf); tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     tf.margin_left = Inches(0.4); tf.text = title
     style_runs(tf, ST_DARK_BLUE, 32, bold=True)
     return slide
 ```
+**Deprecated** — use `section_title_slide` in `st_brand.py` (top yellow bar per template).
+
+## Special slides (`st_brand.py`)
+See `references/special-slides.md` for reference images and anatomy.
+
+```python
+from st_brand import presentation_title_slide, agenda_slide, section_title_slide
+
+presentation_title_slide(prs, "Presentation title", presenter="Presenter name", logo_path="st_logo.png")
+agenda_slide(prs, ["Topic 1", "Topic 2", "Topic 3", "Topic 4"], title="Agenda", logo_path="st_logo.png")
+section_title_slide(prs, "Section title", image_path="optional_hero.jpg", logo_path="st_logo.png")
+```
+
+- **`presentation-title`**: full navy, left yellow accent, white title + presenter, logo top-right.
+- **`agenda`**: white field, “Agenda” top-right, 2-column yellow numbered tiles, logo bottom-left.
+- **`section-title`**: navy field, top yellow bar with section name, optional centered image, logo bottom-left.
 
 ## Closing / trademark slide
 ```python

@@ -16,6 +16,8 @@ Open http://localhost:8080
 
 ## Deploy (Cloud Run)
 
+Cloud Run **service name:** `st-deck-agent` (keep this name — do not rename when redeploying).
+
 ```bash
 cd st-deck-agent
 gcloud run deploy st-deck-agent \
@@ -25,11 +27,11 @@ gcloud run deploy st-deck-agent \
   --allow-unauthenticated \
   --memory 2Gi --cpu 2 --timeout 600 \
   --concurrency 4 --max-instances 1 \
-  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
-  --set-env-vars CURSOR_MODEL=composer-2.5,ACCESS_TOKEN=YOUR_SHARED_SECRET
+  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest,ACCESS_TOKEN=ST_DECK_ACCESS_TOKEN:latest \
+  --set-env-vars CURSOR_MODEL=composer-2.5
 ```
 
-> **Note:** Even with `--allow-unauthenticated`, set `ACCESS_TOKEN` so only colleagues with the token can generate decks. Cloud Run IAP is an alternative.
+> **Note:** Even with `--allow-unauthenticated`, set `ACCESS_TOKEN` (via Secret Manager or env) so only colleagues with the token can generate decks. Cloud Run IAP is an alternative.
 
 ## Environment variables
 

@@ -91,7 +91,10 @@ paired with strong visuals improves retention ("less is more"). Use the title to
 the slide; use the message bar for the one thing the audience should remember.
 
 ## Choosing a content layout
-For any content slide, pick a proven archetype from the **layout library** rather than
+For **special slides** (presentation title, agenda, section title, closing), use the dedicated
+templates in `references/special-slides.md` and `st_brand.py` builders — not Title Only.
+
+For any **content slide**, pick a proven archetype from the **layout library** rather than
 inventing one — they are already brand-compliant. Quick menu (full detail + anatomy in
 `references/layout-library.md`):
 
@@ -111,6 +114,9 @@ inventing one — they are already brand-compliant. Quick menu (full detail + an
 | Product launch / campaign Gantt (organic + paid + product lanes) | `timeline-organic-paid-lanes` |
 | MCU activation plan (content assets + promotion lanes) | `timeline-content-promotion-lanes` |
 
+**Special slides** (not Title Only): `presentation-title`, `agenda`, `section-title` —
+see `references/special-slides.md`.
+
 All archetypes sit on the **"Title Only"** layout and obey the 2–3 color rule. Builders for the
 recurring families are in `references/pptx-implementation.md` and `st_brand.py`.
 
@@ -125,6 +131,8 @@ recurring families are in `references/pptx-implementation.md` and `st_brand.py`.
 ## Reference files (read when relevant)
 - `references/brand-spec.md` — full color table (incl. shading ramp/contrast rules) and the
   complete typography spec.
+- `references/special-slides.md` — presentation title, agenda, section title (when to use,
+  anatomy, reference images). **Use for deck openers and section breaks.**
 - `references/layout-library.md` — the 13 content-layout archetypes (when to use, anatomy,
   color spec) plus a layout picker. **Read this whenever choosing how to lay out a content slide.**
   Reference images for campaign timelines: `references/timeline-organic-paid-lanes.png`,

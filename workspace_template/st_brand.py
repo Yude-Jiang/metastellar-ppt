@@ -63,6 +63,107 @@ def title_only_slide(prs):
     return prs.slides.add_slide(prs.slide_layouts[6])
 
 
+def _slide_bg(slide, color):
+    fill = slide.background.fill
+    fill.solid()
+    fill.fore_color.rgb = color
+
+
+def _place_logo(slide, logo_path, left, top, height=0.48):
+    if logo_path:
+        slide.shapes.add_picture(logo_path, Inches(left), Inches(top), height=Inches(height))
+
+
+def presentation_title_slide(prs, title, presenter=None, logo_path=None):
+    """Main / presentation title — navy field, left yellow accent, white title (see special-slides.md)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, ST_DARK_BLUE)
+    accent = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
+                                    Inches(0.14), Inches(SLIDE_H))
+    fill(accent, ST_YELLOW)
+    tb = slide.shapes.add_textbox(Inches(1.1), Inches(2.55), Inches(9.5), Inches(1.15))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.text = title
+    _style(tf, WHITE, 36, bold=True, align=PP_ALIGN.LEFT)
+    if presenter:
+        ptb = slide.shapes.add_textbox(Inches(1.1), Inches(3.85), Inches(8.0), Inches(0.55))
+        ptf = ptb.text_frame
+        no_autofit(ptf)
+        ptf.text = presenter
+        _style(ptf, WHITE, 18, bold=False, align=PP_ALIGN.LEFT)
+    _place_logo(slide, logo_path, 11.35, 0.38, height=0.5)
+    return slide
+
+
+def agenda_slide(prs, topics, title="Agenda", logo_path=None, columns=2):
+    """Agenda / table of contents — white field, yellow numbered tiles (see special-slides.md)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, WHITE)
+    tb = slide.shapes.add_textbox(Inches(9.6), Inches(0.32), Inches(3.4), Inches(0.9))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.text = title
+    tf.paragraphs[0].alignment = PP_ALIGN.RIGHT
+    _style(tf, ST_DARK_BLUE, 32, bold=True, align=PP_ALIGN.RIGHT)
+    n = len(topics)
+    cols = max(1, min(columns, 2))
+    rows = (n + cols - 1) // cols
+    col_x = [1.35, 7.05]
+    row_y0 = 1.55
+    row_gap = 1.05
+    tile = 0.42
+    for i, topic in enumerate(topics):
+        col = i // rows if rows else 0
+        row = i % rows if rows else 0
+        if col >= cols:
+            col = cols - 1
+        x = col_x[col]
+        y = row_y0 + row * row_gap
+        sq = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y),
+                                    Inches(tile), Inches(tile))
+        fill(sq, ST_YELLOW)
+        stf = sq.text_frame
+        no_autofit(stf)
+        stf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        stf.text = str(i + 1)
+        for p in stf.paragraphs:
+            p.alignment = PP_ALIGN.CENTER
+        _style(stf, ST_DARK_BLUE, 14, bold=True, align=PP_ALIGN.CENTER)
+        label = slide.shapes.add_textbox(Inches(x + tile + 0.18), Inches(y + 0.06),
+                                         Inches(4.8), Inches(0.38))
+        ltf = label.text_frame
+        no_autofit(ltf)
+        ltf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        ltf.text = topic
+        _style(ltf, ST_DARK_BLUE, 14, bold=False, align=PP_ALIGN.LEFT)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.42)
+    return slide
+
+
+def section_title_slide(prs, title, image_path=None, logo_path=None):
+    """Section break — navy field, top yellow bar, optional hero image (see special-slides.md)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, ST_DARK_BLUE)
+    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(3.35), Inches(0),
+                                 Inches(SLIDE_W - 3.35), Inches(1.15))
+    fill(bar, ST_YELLOW)
+    tf = bar.text_frame
+    no_autofit(tf)
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    tf.margin_left = Inches(0.35)
+    tf.text = title
+    _style(tf, ST_DARK_BLUE, 30, bold=True, align=PP_ALIGN.LEFT)
+    if image_path:
+        slide.shapes.add_picture(image_path, Inches(2.2), Inches(1.65),
+                                 width=Inches(8.9), height=Inches(4.35))
+    rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.45), Inches(6.72),
+                                  Inches(12.4), Inches(0.02))
+    fill(rule, GRAY_3)
+    _place_logo(slide, logo_path, 0.45, 6.85, height=0.38)
+    return slide
+
+
 def fill(shape, color):
     shape.fill.solid()
     shape.fill.fore_color.rgb = color

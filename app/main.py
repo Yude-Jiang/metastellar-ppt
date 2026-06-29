@@ -84,18 +84,24 @@ app = FastAPI(title="ST Deck Agent", lifespan=lifespan)
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return (TEMPLATES / "index.html").read_text(encoding="utf-8")
+    return HTMLResponse(
+        (TEMPLATES / "index.html").read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/api/config")
 async def api_config():
-    return {
-        "max_pages": config.MAX_PAGES,
-        "auth_required": bool(config.ACCESS_TOKEN),
-        "max_upload_files": config.MAX_UPLOAD_FILES,
-        "max_upload_file_mb": config.MAX_UPLOAD_FILE_BYTES // (1024 * 1024),
-        "languages": ["zh", "en", "ja"],
-    }
+    return JSONResponse(
+        {
+            "max_pages": config.MAX_PAGES,
+            "auth_required": bool(config.ACCESS_TOKEN),
+            "max_upload_files": config.MAX_UPLOAD_FILES,
+            "max_upload_file_mb": config.MAX_UPLOAD_FILE_BYTES // (1024 * 1024),
+            "languages": ["zh", "en", "ja"],
+        },
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/favicon.ico")

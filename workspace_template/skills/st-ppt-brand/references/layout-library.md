@@ -1,6 +1,9 @@
 # ST Slide Layout Library
 
-A catalog of proven, brand-compliant content layouts from ST's official slide-layout library.
+> **Special slides** (presentation title, agenda, section title): see
+> [`special-slides.md`](special-slides.md) — dedicated layouts, not Title Only.
+
+A catalog of proven, brand-compliant **content** layouts from ST's official slide-layout library.
 When building a content slide, **pick the archetype that fits the content shape**, then style
 it with the palette in `brand-spec.md`. All of these sit on the **"Title Only"** layout — the
 title, corner accent, logo, and slide number come from the template; everything else you place
