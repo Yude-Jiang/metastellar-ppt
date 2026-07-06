@@ -89,6 +89,15 @@ async def index():
     )
 
 
+@app.get("/manual", response_class=HTMLResponse)
+async def user_manual():
+    docs = Path(__file__).resolve().parent.parent / "docs" / "user-manual.html"
+    return HTMLResponse(
+        docs.read_text(encoding="utf-8"),
+        headers={"Cache-Control": "no-store"},
+    )
+
+
 @app.get("/api/config")
 async def api_config():
     return JSONResponse(

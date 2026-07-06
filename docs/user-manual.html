@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Metastellar PPT — 用户手册</title>
+<style>
+  :root {
+    --blue-500:#3B82F6; --blue-600:#2563EB; --indigo-500:#6366F1; --indigo-600:#4F46E5;
+    --blue-50:#EFF6FF; --blue-100:#DBEAFE; --blue-800:#1E40AF;
+    --green-500:#22C55E; --green-50:#F0FDF4;
+    --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB; --gray-300:#D1D5DB;
+    --gray-500:#6B7280; --gray-600:#4B5563; --gray-800:#1F2937;
+    --white:#FFFFFF;
+    --grad: linear-gradient(135deg, var(--blue-500), var(--indigo-600));
+    --shadow: 0 1px 2px rgba(59,130,246,.06), 0 12px 32px rgba(59,130,246,.08);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: var(--gray-800);
+    background: var(--gray-50);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--blue-600); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .hero {
+    background: var(--grad);
+    color: var(--white);
+    padding: 48px 24px 56px;
+    border-bottom: 3px solid var(--blue-100);
+  }
+  .hero-inner { max-width: 920px; margin: 0 auto; }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .hero h1 { margin: 0 0 12px; font-size: 2rem; font-weight: 700; letter-spacing: -.02em; }
+  .hero p { margin: 0; max-width: 640px; font-size: 1.05rem; color: var(--blue-100); }
+  .hero-actions { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-actions a.btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 9px; font-weight: 600; font-size: 14px;
+    text-decoration: none; transition: .15s;
+  }
+  .btn-primary { background: var(--white); color: var(--blue-600); }
+  .btn-primary:hover { box-shadow: 0 4px 14px rgba(0,0,0,.12); text-decoration: none; }
+  .btn-ghost { background: rgba(255,255,255,.12); color: var(--white); border: 1px solid rgba(255,255,255,.25); }
+  .btn-ghost:hover { background: rgba(255,255,255,.2); text-decoration: none; }
+
+  /* Layout */
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px 64px; }
+  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 40px; margin-top: 32px; }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static !important; }
+  }
+
+  /* TOC */
+  .toc {
+    position: sticky; top: 24px; align-self: start;
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .toc h2 { margin: 0 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-500); }
+  .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc li { margin: 4px 0; }
+  .toc a { font-size: 13px; color: var(--gray-600); display: block; padding: 4px 0; }
+  .toc a:hover { color: var(--blue-600); text-decoration: none; }
+
+  /* Content */
+  main section { margin-bottom: 48px; scroll-margin-top: 24px; }
+  main h2 {
+    font-size: 1.35rem; color: var(--blue-800); margin: 0 0 16px;
+    padding-bottom: 10px; border-bottom: 2px solid var(--blue-100);
+  }
+  main h3 { font-size: 1.05rem; color: var(--gray-800); margin: 24px 0 10px; }
+  main p { margin: 0 0 12px; color: var(--gray-600); }
+  main ul, main ol { margin: 0 0 16px; padding-left: 22px; color: var(--gray-600); }
+  main li { margin-bottom: 6px; }
+
+  .card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: 12px; padding: 20px 22px; margin-bottom: 16px; box-shadow: var(--shadow);
+  }
+  .card h3 { margin-top: 0; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
+  .mini-card {
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 10px; padding: 16px;
+  }
+  .mini-card b { display: block; color: var(--blue-800); margin-bottom: 6px; font-size: 14px; }
+  .mini-card span { font-size: 13px; color: var(--gray-500); }
+
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 16px;
+    background: var(--white); border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--gray-200);
+  }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--gray-100); }
+  th { background: var(--blue-50); color: var(--blue-800); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  code {
+    font-family: ui-monospace, Consolas, monospace; font-size: 12px;
+    background: var(--blue-50); color: var(--blue-800);
+    padding: 2px 6px; border-radius: 4px;
+  }
+  pre {
+    background: var(--gray-800); color: #E5E7EB; padding: 16px 18px;
+    border-radius: 10px; overflow-x: auto; font-size: 12px; line-height: 1.55; margin: 12px 0 16px;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 16px 0; }
+  .steps li {
+    counter-increment: step; position: relative; padding: 14px 14px 14px 52px;
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: 10px; margin-bottom: 10px;
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 14px; top: 14px;
+    width: 28px; height: 28px; border-radius: 8px; background: var(--grad);
+    color: var(--white); font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .steps li b { color: var(--gray-800); }
+
+  .tip {
+    background: var(--green-50); border-left: 4px solid var(--green-500);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: var(--gray-600);
+  }
+  .warn {
+    background: #FFFBEB; border-left: 4px solid #F59E0B;
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; color: var(--gray-600);
+  }
+
+  footer {
+    text-align: center; padding: 32px 24px; color: var(--gray-500); font-size: 13px;
+    border-top: 1px solid var(--gray-200); margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="badge">User Manual · v1.0</span>
+    <h1>Metastellar PPT 用户手册</h1>
+    <p>面向营销机构的 AI 演示文稿生成工具。输入客户 brief，一键生成高档提案级 PowerPoint，支持预览、下载与在线修改。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="/">打开应用</a>
+      <a class="btn btn-ghost" href="#quickstart">快速开始</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <nav class="toc" aria-label="目录">
+      <h2>目录</h2>
+      <ul>
+        <li><a href="#overview">产品简介</a></li>
+        <li><a href="#quickstart">快速开始</a></li>
+        <li><a href="#ui">界面使用</a></li>
+        <li><a href="#modes">生成模式</a></li>
+        <li><a href="#density">信息密度</a></li>
+        <li><a href="#brief">撰写有效 Brief</a></li>
+        <li><a href="#agency">提案叙事结构</a></li>
+        <li><a href="#layouts">版式参考</a></li>
+        <li><a href="#edit">在线编辑</a></li>
+        <li><a href="#output">输出文件</a></li>
+        <li><a href="#deploy">部署说明</a></li>
+        <li><a href="#env">环境变量</a></li>
+        <li><a href="#faq">常见问题</a></li>
+      </ul>
+    </nav>
+
+    <main>
+
+      <section id="overview">
+        <h2>产品简介</h2>
+        <p>Metastellar PPT 是一款基于 Cursor AI Agent 的演示文稿生成服务。它专为<strong>营销机构向客户呈现方案</strong>而设计，默认产出高档、留白充足、层级清晰的提案级 PPT。</p>
+        <div class="card-grid">
+          <div class="mini-card">
+            <b>🎯 定位</b>
+            <span>Agency → Client 提案、战役方案、Retainer 汇报</span>
+          </div>
+          <div class="mini-card">
+            <b>🎨 设计系统</b>
+            <span>Metastellar 蓝色 Tailwind 色板 + 7 种 agency 高档版式</span>
+          </div>
+          <div class="mini-card">
+            <b>📦 输出</b>
+            <span>可下载 .pptx + 每页 PNG 预览 + 可复现 build.py</span>
+          </div>
+          <div class="mini-card">
+            <b>🌐 语言</b>
+            <span>界面与幻灯片均支持中文 / English / 日本語</span>
+          </div>
+        </div>
+        <div class="tip">无需 Access Token，打开页面即可使用（受 IP 速率限制保护）。</div>
+      </section>
+
+      <section id="quickstart">
+        <h2>快速开始</h2>
+        <h3>本地运行（开发者）</h3>
+        <pre><code>export CURSOR_API_KEY=your_key
+pip install -r requirements.txt
+playwright install chromium
+uvicorn app.main:app --reload --port 8080</code></pre>
+        <p>浏览器访问 <a href="http://localhost:8080">http://localhost:8080</a></p>
+
+        <h3>网页端生成（普通用户）</h3>
+        <ol class="steps">
+          <li><b>撰写需求</b> — 在左侧文本框描述客户、战役目标、页数与要点；可上传 brief、数据文档。</li>
+          <li><b>选择参数</b> — 设置页数、信息密度（演讲型/阅读型）、幻灯片语言。</li>
+          <li><b>生成 PPT</b> — 点击按钮，右侧工作台实时显示 Agent 进度。</li>
+          <li><b>预览与下载</b> — 完成后查看每页 PNG 预览，下载 <code>deck.pptx</code>。</li>
+          <li><b>在线编辑（可选）</b> — 在「在线编辑」框输入修改指令，Agent 会更新并重新渲染。</li>
+        </ol>
+      </section>
+
+      <section id="ui">
+        <h2>界面使用</h2>
+        <div class="card">
+          <h3>左侧面板 — 撰写需求</h3>
+          <ul>
+            <li><strong>需求文本框</strong>：核心输入。写清客户是谁、要什么方案、关键数据与约束。</li>
+            <li><strong>试试</strong>：点击示例 chip 可快速填充模板 brief。</li>
+            <li><strong>页数</strong>：1–6 页（可在服务端通过 <code>MAX_PAGES</code> 调整上限）。</li>
+            <li><strong>信息密度</strong>：演讲型 / 阅读型（见下文）。</li>
+            <li><strong>幻灯片语言</strong>：生成内容的语言，与界面语言独立。</li>
+            <li><strong>参考文档</strong>：支持 PDF、Word、PPT、Excel、图片、Markdown、纯文本。</li>
+            <li><strong>对话模式</strong>：开启后先出大纲，确认后再生成（Beta）。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>右侧面板 — 工作台</h3>
+          <ul>
+            <li><strong>待命</strong>：展示 Agent 四步工作流程说明。</li>
+            <li><strong>运行中</strong>：流式显示思考、工具调用、状态与文本输出。</li>
+            <li><strong>完成</strong>：幻灯片预览图 + 下载链接。</li>
+            <li>生成过程中可点击<strong>停止</strong>中断当前任务。</li>
+          </ul>
+        </div>
+        <p>界面右上角可切换<strong>界面语言</strong>（中文 / EN / 日本語）。</p>
+      </section>
+
+      <section id="modes">
+        <h2>生成模式</h2>
+        <table>
+          <thead><tr><th>模式</th><th>说明</th><th>适用场景</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>一键生成</strong>（默认）</td>
+              <td>单次提交，Agent 自动完成理解 → 设计 → 构建 → 自检，无需等待确认。</td>
+              <td>Brief 清晰、赶时间、内部分享</td>
+            </tr>
+            <tr>
+              <td><strong>对话模式</strong>（Beta）</td>
+              <td>首轮只出逐页大纲 + 追问；用户回复「确认」/ OK 后才开始生成 .pptx。</td>
+              <td>复杂提案、需要先对齐结构</td>
+            </tr>
+            <tr>
+              <td><strong>在线编辑</strong></td>
+              <td>生成完成后，用自然语言描述修改（如「标题改成…」「第三页换成 KPI 页」）。</td>
+              <td>小修小补、迭代优化</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="warn">对话模式需要服务保持单实例（<code>--max-instances 1</code>），否则重启后会话上下文会丢失。</div>
+      </section>
+
+      <section id="density">
+        <h2>信息密度</h2>
+        <div class="card-grid">
+          <div class="mini-card">
+            <b>演讲型（Speaker-led）</b>
+            <span>默认推荐。一页一观点，大标题、1–3 条要点、大留白。适合现场向客户提案。</span>
+          </div>
+          <div class="mini-card">
+            <b>阅读型（Reading-first）</b>
+            <span>信息更自洽，允许多列卡片、表格与 4–6 条要点。适合邮件发送或异步审阅。</span>
+          </div>
+        </div>
+        <p>内容过多时，Agent 会<strong>拆页</strong>而非缩小字号。若 brief 信息量大，请适当增加页数或选阅读型。</p>
+      </section>
+
+      <section id="brief">
+        <h2>撰写有效 Brief</h2>
+        <p>好的 brief = 好的提案。建议包含以下要素：</p>
+        <table>
+          <thead><tr><th>要素</th><th>示例</th></tr></thead>
+          <tbody>
+            <tr><td>客户 / 品牌</td><td>「某消费品牌华东区」</td></tr>
+            <tr><td>方案类型</td><td>「Q3 社媒增长提案」「新品上市战役」</td></tr>
+            <tr><td>页数</td><td>「8 页，含封面与结案」</td></tr>
+            <tr><td>核心信息</td><td>「策略三支柱 + 时间线 + KPI 预期」</td></tr>
+            <tr><td>数据 / 素材</td><td>上传 brief PDF、过往数据、竞品截图</td></tr>
+            <tr><td>受众</td><td>「客户市场总监，现场汇报」→ 选演讲型</td></tr>
+          </tbody>
+        </table>
+        <h3>示例 brief</h3>
+        <pre><code>为某消费品牌做 8 页 Q3 社媒增长方案提案：
+封面、挑战洞察、策略三支柱、战役时间线、KPI 预期、结案页。
+演讲型，突出 +38% 触达与 2.4× ROAS 目标。
+附上上传的 Q2 复盘 PDF。</code></pre>
+      </section>
+
+      <section id="agency">
+        <h2>提案叙事结构</h2>
+        <p>Agent 默认按营销机构客户提案的经典叙事弧线组织内容：</p>
+        <table>
+          <thead><tr><th>顺序</th><th>幻灯片角色</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>封面</td><td>客户名 + 方案名，第一印象</td></tr>
+            <tr><td>2</td><td>议程</td><td>今天讲什么</td></tr>
+            <tr><td>3</td><td>挑战 / 背景</td><td>客户现状与痛点</td></tr>
+            <tr><td>4</td><td>核心洞察</td><td>North Star 一句话</td></tr>
+            <tr><td>5</td><td>策略支柱</td><td>3–4 个可执行方向</td></tr>
+            <tr><td>6</td><td>创意 / 渠道</td><td>怎么做</td></tr>
+            <tr><td>7</td><td>时间线</td><td>战役节奏与里程碑</td></tr>
+            <tr><td>8</td><td>KPI 预期</td><td>大数字证明价值</td></tr>
+            <tr><td>9</td><td>结案</td><td>Thank you / Q&A</td></tr>
+          </tbody>
+        </table>
+        <p>页数较少时自动压缩为：封面 → 大创意 → 支柱或 KPI → 结案。</p>
+      </section>
+
+      <section id="layouts">
+        <h2>版式参考</h2>
+        <p>系统内置高档 agency 版式（由 <code>slide_theme.py</code> 实现）：</p>
+        <table>
+          <thead><tr><th>版式</th><th>适用时刻</th></tr></thead>
+          <tbody>
+            <tr><td><code>agency_cover_slide</code></td><td>提案封面</td></tr>
+            <tr><td><code>agency_section_slide</code></td><td>章节分隔</td></tr>
+            <tr><td><code>big_idea_slide</code></td><td>核心洞察 / 大创意</td></tr>
+            <tr><td><code>challenge_solution_slide</code></td><td>挑战 vs 我方方案</td></tr>
+            <tr><td><code>pillar_strategy_slide</code></td><td>策略三/四支柱</td></tr>
+            <tr><td><code>metrics_3up_slide</code></td><td>三列 KPI 大数字</td></tr>
+            <tr><td><code>campaign_timeline_slide</code></td><td>战役 / 投放时间线</td></tr>
+            <tr><td><code>left_image_icon_rows_slide</code></td><td>主视觉 + 要点行</td></tr>
+            <tr><td><code>closing_slide</code></td><td>致谢结案</td></tr>
+          </tbody>
+        </table>
+        <p>设计规范：每页 ≤3 色、Segoe UI 字体、蓝/靛蓝主色 + 灰阶中性色。</p>
+      </section>
+
+      <section id="edit">
+        <h2>在线编辑</h2>
+        <p>首次生成完成后，「在线编辑」区域会出现。用自然语言描述修改即可，例如：</p>
+        <ul>
+          <li>「把封面客户名改成 ABC Brand」</li>
+          <li>「第三页换成 KPI 页，三个指标：触达 +40%、ROAS 2.5×、CPA -20%」</li>
+          <li>「整体色调再偏深蓝一点」</li>
+          <li>「增加一页竞品分析」</li>
+        </ul>
+        <p>Agent 会更新 <code>build.py</code>、重新导出 .pptx 并刷新预览图。未提及的页面尽量保持不变。</p>
+      </section>
+
+      <section id="output">
+        <h2>输出文件</h2>
+        <p>每次生成会话产出：</p>
+        <table>
+          <thead><tr><th>文件</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>output/deck.pptx</code></td><td>最终 PowerPoint，16:9 宽屏</td></tr>
+            <tr><td><code>output/preview-*.png</code></td><td>每页渲染预览，用于自检溢出与配色</td></tr>
+            <tr><td><code>build.py</code></td><td>可复现的构建脚本，编辑后重新运行即可</td></tr>
+            <tr><td><code>output/deck_meta.json</code></td><td>标题与下载文件名元数据</td></tr>
+          </tbody>
+        </table>
+        <p>下载文件名格式示例：<code>品牌增长提案-2026-07-06.pptx</code></p>
+      </section>
+
+      <section id="deploy">
+        <h2>部署说明</h2>
+        <p>推荐部署到 Google Cloud Run：</p>
+        <pre><code>gcloud run deploy metastellar-ppt \
+  --source . \
+  --project YOUR_PROJECT \
+  --region asia-east1 \
+  --allow-unauthenticated \
+  --memory 2Gi --cpu 2 --timeout 600 \
+  --concurrency 4 --max-instances 1 \
+  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
+  --set-env-vars CURSOR_MODEL=composer-2.5</code></pre>
+        <ul>
+          <li>对话模式建议 <code>--max-instances 1</code> 保持 Agent 会话。</li>
+          <li>Docker 镜像已包含 LibreOffice（预览渲染）与 Playwright（URL 截图）。</li>
+          <li>可选 <code>GCS_BUCKET</code> 持久化会话，应对实例重启。</li>
+        </ul>
+      </section>
+
+      <section id="env">
+        <h2>环境变量</h2>
+        <table>
+          <thead><tr><th>变量</th><th>默认</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>CURSOR_API_KEY</code></td><td>—</td><td>必填。Cursor API 密钥</td></tr>
+            <tr><td><code>CURSOR_MODEL</code></td><td>composer-2.5</td><td>Agent 使用的模型</td></tr>
+            <tr><td><code>MAX_PAGES</code></td><td>6</td><td>单次请求最大页数</td></tr>
+            <tr><td><code>RATE_LIMIT_PER_MINUTE</code></td><td>10</td><td>每 IP 每分钟请求上限</td></tr>
+            <tr><td><code>MAX_UPLOAD_FILES</code></td><td>5</td><td>单次最多上传文件数</td></tr>
+            <tr><td><code>MAX_UPLOAD_FILE_BYTES</code></td><td>10 MB</td><td>单文件大小上限</td></tr>
+            <tr><td><code>MAX_UPLOAD_TOTAL_BYTES</code></td><td>30 MB</td><td>总上传大小上限</td></tr>
+            <tr><td><code>RUN_TIMEOUT_SEC</code></td><td>540</td><td>单次 Agent 运行超时（秒）</td></tr>
+            <tr><td><code>SESSION_TTL_HOURS</code></td><td>24</td><td>会话过期时间</td></tr>
+            <tr><td><code>GCS_BUCKET</code></td><td>空</td><td>可选，会话持久化</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="faq">
+        <h2>常见问题</h2>
+        <div class="card">
+          <h3>生成失败或超时？</h3>
+          <p>尝试减少页数、简化 brief，或拆成多次生成后合并。检查服务端 <code>CURSOR_API_KEY</code> 是否有效。</p>
+        </div>
+        <div class="card">
+          <h3>预览图文字溢出？</h3>
+          <p>Agent 有自检环节，但偶发仍可能溢出。使用「在线编辑」要求精简文案或拆页。</p>
+        </div>
+        <div class="card">
+          <h3>能用自己的 Logo 吗？</h3>
+          <p>在 brief 中说明并提供 Logo 图片上传；Agent 会尝试放入封面等位置。</p>
+        </div>
+        <div class="card">
+          <h3>支持动效吗？</h3>
+          <p>当前输出标准 .pptx 静态幻灯片。HTML 动效版为后续规划方向。</p>
+        </div>
+        <div class="card">
+          <h3>数据安全？</h3>
+          <p>请勿上传涉密资料。上传文件仅用于当次生成，会话默认 24 小时后自动清理。</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<footer>
+  Metastellar PPT · 用户手册 · <a href="/">返回应用</a>
+</footer>
+
+</body>
+</html>
