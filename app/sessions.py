@@ -32,8 +32,14 @@ def normalize_lang(raw: str | None) -> str:
     return lang if lang in SUPPORTED_LANGS else "zh"
 
 
+def normalize_density(raw: str | None) -> str:
+    d = (raw or "speaker").strip().lower()
+    return d if d in ("speaker", "reading") else "speaker"
+
+
 def _new_session_sync(
-    uploads: list[tuple[str, bytes]], request_text: str, language: str = "zh"
+    uploads: list[tuple[str, bytes]], request_text: str, language: str = "zh",
+    density: str = "speaker",
 ) -> tuple[str, Path]:
     sid = uuid.uuid4().hex[:12]
     ws = config.SESSIONS / sid
@@ -47,6 +53,7 @@ def _new_session_sync(
     if request_text.strip():
         (ws / "request.txt").write_text(request_text.strip(), encoding="utf-8")
     (ws / "language.txt").write_text(normalize_lang(language), encoding="utf-8")
+    (ws / "density.txt").write_text(normalize_density(density), encoding="utf-8")
     touch_session(ws)
     return sid, ws
 
@@ -131,10 +138,11 @@ async def new_session(
     uploads: list[tuple[str, bytes]] | None = None,
     request_text: str = "",
     language: str = "zh",
+    density: str = "speaker",
 ) -> tuple[str, Path]:
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(
-        None, _new_session_sync, uploads or [], request_text, language
+        None, _new_session_sync, uploads or [], request_text, language, density
     )
 
 
@@ -157,8 +165,18 @@ def _slug_filename(subject: str) -> str:
     slug = re.sub(r"[^\w\s\u4e00-\u9fff-]", "", subject, flags=re.UNICODE)
     slug = re.sub(r"[-\s]+", "-", slug).strip("-")[:50]
     if not slug:
-        slug = "ST-Deck"
+        slug = "Deck"
     return f"{slug}-{date.today().isoformat()}.pptx"
+
+
+def session_density(ws: Path) -> str:
+    p = ws / "density.txt"
+    if p.exists():
+        try:
+            return normalize_density(p.read_text(encoding="utf-8"))
+        except OSError:
+            pass
+    return "speaker"
 
 
 def session_language(ws: Path) -> str:
@@ -190,7 +208,7 @@ def deck_download_name(ws: Path) -> str:
         if req.exists()
         else ""
     )
-    return _slug_filename(subject or "ST-Deck")
+    return _slug_filename(subject or "Deck")
 
 
 def collect_outputs(sid: str, ws: Path) -> dict:

@@ -1,8 +1,8 @@
 # python-pptx Implementation Patterns
 
-Copy-paste patterns that bake the ST brand into generated `.pptx` files. Read the public
-`pptx` skill for general mechanics; these snippets layer the ST rules on top. If you have the
-official ST template, prefer `Presentation("ST_template.pptx")` and its layouts over building
+Copy-paste patterns that bake the Metastellar brand into generated `.pptx` files. Read the public
+`pptx` skill for general mechanics; these snippets layer the Metastellar rules on top. If you have the
+official Metastellar template, prefer `Presentation("ST_template.pptx")` and its layouts over building
 from scratch — then just apply the palette/typography below.
 
 ## Palette & helpers
@@ -14,7 +14,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_AUTO_SIZE, PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
-# ST palette (official names: Green Vogue / Gold / Picton Blue / White)
+# Metastellar palette (official names: Green Vogue / Gold / Picton Blue / White)
 ST_DARK_BLUE = RGBColor(0x03, 0x23, 0x4B)   # Green Vogue
 ST_YELLOW    = RGBColor(0xFF, 0xD2, 0x00)   # Gold
 ST_LIGHT_BLUE= RGBColor(0x3C, 0xB4, 0xE6)   # Picton Blue
@@ -24,21 +24,21 @@ GRAY_2       = RGBColor(0xDB, 0xDE, 0xE1)
 GRAY_3       = RGBColor(0xC0, 0xC8, 0xD2)   # medium blue-gray
 
 # Dark-blue shading ramp (graded headers / process circles). Darkest first.
-RAMP = [RGBColor(0x03,0x23,0x4B),   # 1 ST Dark Blue
+RAMP = [RGBColor(0x03,0x23,0x4B),   # 1 Primary Dark (blue-800)
         RGBColor(0x42,0x59,0x78),   # 2 slate = "first shade of dark blue"
         RGBColor(0x80,0x91,0xA5),   # 3 medium blue-gray
         RGBColor(0xC0,0xC9,0xCE)]   # 4 light blue-gray
 def ramp_text(step):  # white on dark steps, dark blue on light steps
     return WHITE if step < 2 else ST_DARK_BLUE
 
-FONT = "Arial"
+FONT = "Segoe UI"
 
 def fill(shape, color):
     shape.fill.solid(); shape.fill.fore_color.rgb = color
     shape.line.fill.background()  # no border by default
 
 def no_autofit(tf):
-    # The ST rule: never autofit; size boxes manually.
+    # The Metastellar rule: never autofit; size boxes manually.
     tf.word_wrap = True
     tf.auto_size = MSO_AUTO_SIZE.NONE
 
@@ -57,8 +57,8 @@ prs.slide_height = Inches(7.5)
 ```
 
 ## Key message bar (the signature element)
-Geometry derived from the template guides. Fill must be one of: ST Yellow, ST Dark Blue,
-ST Light Blue. Text is 20 pt Arial, single color, contrast-matched.
+Geometry derived from the template guides. Fill must be one of: Accent (indigo-500), Primary Dark (blue-800),
+Primary (blue-500). Text is 20 pt Segoe UI, single color, contrast-matched.
 
 ```python
 def add_message_bar(slide, text, fill_color=ST_LIGHT_BLUE):
@@ -72,7 +72,7 @@ def add_message_bar(slide, text, fill_color=ST_LIGHT_BLUE):
     tf.text = text
     # contrast: dark-blue text on yellow/light-blue, white on dark blue
     txt = WHITE if fill_color == ST_DARK_BLUE else ST_DARK_BLUE
-    style_runs(tf, txt, 20, bold=True)   # 20 pt Arial, no exceptions
+    style_runs(tf, txt, 20, bold=True)   # 20 pt Segoe UI, no exceptions
     return bar
 ```
 
@@ -123,9 +123,9 @@ def add_section_slide(prs, title):
     style_runs(tf, ST_DARK_BLUE, 32, bold=True)
     return slide
 ```
-**Deprecated** — use `section_title_slide` in `st_brand.py` (top yellow bar per template).
+**Deprecated** — use `section_title_slide` in `slide_theme.py` (top yellow bar per template).
 
-## Special slides (`st_brand.py`)
+## Special slides (`slide_theme.py`)
 See `references/special-slides.md` for reference images and anatomy.
 
 ```python
@@ -143,19 +143,19 @@ section_title_slide(prs, "Section title", image_path="optional_hero.jpg", logo_p
 ## Closing / trademark slide
 ```python
 TRADEMARK = ("© STMicroelectronics - All rights reserved.\n"
-    "ST logo is a trademark or a registered trademark of STMicroelectronics "
+    "Logo is a trademark or a registered trademark of STMicroelectronics "
     "International NV or its affiliates in the EU and/or other countries.\n"
-    "For additional information about ST trademarks, please refer to "
+    "For additional information about Metastellar trademarks, please refer to "
     "www.st.com/trademarks.\n"
     "All other product or service names are the property of their respective owners.")
 ```
-Put "Our technology starts with You" in white on an ST Dark Blue background, with a yellow
-footer band carrying `TRADEMARK` (small white Arial) and the ST logo bottom-right.
+Put "Our technology starts with You" in white on an Primary Dark (blue-800) background, with a yellow
+footer band carrying `TRADEMARK` (small white Segoe UI) and the Logo bottom-right.
 
 ## Layout-library builders
 These cover the recurring families in `layout-library.md`. The others (quadrant, image grid,
 `timeline-era-cards`, row-label table) compose from the same primitives: `fill`, `add_shape`, a card =
-header bar + image + gray box. Campaign timelines (#12–#13) use `st_brand.py` helpers.
+header bar + image + gray box. Campaign timelines (#12–#13) use `slide_theme.py` helpers.
 
 ### `cards-Nup` — N cards: header + image + bullet box (covers #4, #5, #6, #11 card rows)
 ```python
@@ -250,7 +250,7 @@ def add_process_flow(slide, steps, cy=4.1, d=1.9):
 Add the connecting dotted line and "Step N" caption text boxes alongside as needed.
 
 ### `timeline-content-promotion-lanes` (covers #13)
-Use the ready-made builder in `st_brand.py`:
+Use the ready-made builder in `slide_theme.py`:
 
 ```python
 from st_brand import new_deck, title_only_slide, corner_accent, add_title, add_message_bar
@@ -267,7 +267,7 @@ timeline_template_slide(
 )
 ```
 
-`add_activation_timeline` draws the ST Dark Blue axis, lane labels ("CONTENT" / "PROMO"),
+`add_activation_timeline` draws the Primary Dark (blue-800) axis, lane labels ("CONTENT" / "PROMO"),
 date checkpoints, and milestone boxes above/below the axis. Yellow boxes = highlighted items;
 gray boxes = TBC or secondary items.
 
@@ -276,7 +276,7 @@ Compose from `st_brand` primitives (`arrow`, `box`, `label`, `bullet_box`):
 
 ```python
 def add_timeline_axis(slide, y_in, x0=0.8, x1=12.5):
-    """ST Dark Blue arrow axis with yellow date markers."""
+    """Primary Dark (blue-800) arrow axis with yellow date markers."""
     arrow(slide, x0, y_in, x1, y_in, color=ST_DARK_BLUE, width=2.2)
 
 def add_date_marker(slide, x_in, y_in, date_label, r=0.12):

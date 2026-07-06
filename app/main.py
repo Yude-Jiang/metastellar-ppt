@@ -1,4 +1,4 @@
-"""FastAPI service: shareable ST deck generator on Cloud Run.
+"""FastAPI service: Metastellar PPT generator on Cloud Run.
 
 Modes:
   One-shot (default):  POST /generate (multipart)  +  POST /edit (json)
@@ -38,6 +38,7 @@ from .sessions import (
     cleanup_expired_sessions,
     deck_download_name,
     new_session,
+    normalize_density,
     normalize_lang,
 )
 
@@ -77,7 +78,7 @@ async def lifespan(app: FastAPI):
         pass
 
 
-app = FastAPI(title="ST Deck Agent", lifespan=lifespan)
+app = FastAPI(title="Metastellar PPT", lifespan=lifespan)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -96,6 +97,7 @@ async def api_config():
             "max_upload_files": config.MAX_UPLOAD_FILES,
             "max_upload_file_mb": config.MAX_UPLOAD_FILE_BYTES // (1024 * 1024),
             "languages": ["zh", "en", "ja"],
+            "density_modes": ["speaker", "reading"],
         },
         headers={"Cache-Control": "no-store"},
     )
@@ -173,6 +175,7 @@ async def generate(
     request: str = Form(...),
     pages: int = Form(1),
     language: str = Form("zh"),
+    density: str = Form("speaker"),
     files: list[UploadFile] = File(default=[]),
 ):
     if rej := _reject(http_request):
@@ -184,7 +187,8 @@ async def generate(
     if up_err:
         return JSONResponse({"error": up_err}, status_code=400)
     lang = normalize_lang(language)
-    sid, ws = await new_session(uploads, request, language=lang)
+    dens = normalize_density(density)
+    sid, ws = await new_session(uploads, request, language=lang, density=dens)
     client = app.state.client
 
     async def factory(emit):
@@ -227,6 +231,7 @@ async def chat_start_ep(
     request: str = Form(...),
     pages: int = Form(1),
     language: str = Form("zh"),
+    density: str = Form("speaker"),
     files: list[UploadFile] = File(default=[]),
 ):
     if rej := _reject(http_request):
@@ -238,7 +243,8 @@ async def chat_start_ep(
     if up_err:
         return JSONResponse({"error": up_err}, status_code=400)
     lang = normalize_lang(language)
-    sid, ws = await new_session(uploads, request, language=lang)
+    dens = normalize_density(density)
+    sid, ws = await new_session(uploads, request, language=lang, density=dens)
     client = app.state.client
 
     async def factory(emit):

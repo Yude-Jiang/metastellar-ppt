@@ -1,6 +1,7 @@
-# ST Deck Agent
+# Metastellar PPT
 
-Internal Cloud Run tool that generates ST-brand-compliant PowerPoint decks via the Cursor SDK.
+AI-powered presentation generator that builds polished PowerPoint decks via the Cursor SDK.
+Uses the Metastellar blue design system — **not** STMicroelectronics brand.
 
 ## Quick start (local)
 
@@ -15,11 +16,8 @@ Open http://localhost:8080
 
 ## Deploy (Cloud Run)
 
-Cloud Run **service name:** `st-deck-agent` (keep this name — do not rename when redeploying).
-
 ```bash
-cd st-deck-agent
-gcloud run deploy st-deck-agent \
+gcloud run deploy metastellar-ppt \
   --source . \
   --project YOUR_PROJECT \
   --region asia-east1 \
@@ -51,26 +49,27 @@ gcloud run deploy st-deck-agent \
 
 - **One-shot (default):** `POST /generate` → deck + previews in one unattended run.
 - **Edit:** `POST /edit` with `{session, instruction}` after a one-shot run.
-- **对话模式（Beta）**：首轮只出大纲与追问，用户**明确确认后**才 BUILD；后续可继续对话修改。需 `--max-instances 1`；重启后对话上下文丢失。
+- **对话模式（Beta）**：首轮只出大纲与追问，用户确认后才 BUILD。
+
+## Density
+
+- **Speaker-led** (`density=speaker`): fewer words per slide, presentation pacing.
+- **Reading-first** (`density=reading`): denser slides for async review.
+
+## Design system
+
+Agent rules: `workspace_template/AGENTS.md` and `workspace_template/skills/metastellar-slides/`.  
+Python helpers: `workspace_template/slide_theme.py` (blue Tailwind palette, layout builders).
 
 ## Outputs
 
 Each session produces:
 
-- `output/deck.pptx` — download served with a friendly name from `deck_meta.json` or the request subject.
-- `output/preview-*.png` — rendered slide previews for self-check.
-- `build.py` — reproducible build script for edits.
-
-## Brand compliance
-
-Agent rules live in `workspace_template/AGENTS.md` and `workspace_template/skills/st-ppt-brand/`.  
-Python helpers in `workspace_template/st_brand.py` include `text_on()` for contrast and `closing_slide()` for external decks.
-
-## Preview fonts
-
-The Docker image uses Liberation Sans as an Arial metric substitute for LibreOffice preview rendering. Generated `.pptx` files still declare Arial; final rendering on machines with real Arial may differ slightly.
+- `output/deck.pptx` — downloadable presentation
+- `output/preview-*.png` — rendered slide previews for self-check
+- `build.py` — reproducible build script for edits
 
 ## Security notes
 
 - Upload limits and rate limiting are enabled by default.
-- Session IDs are 12 hex chars — not a secret; use Cloud Run IAP or network controls if you need stronger access control.
+- Session IDs are 12 hex chars — use network controls if you need stronger access control.

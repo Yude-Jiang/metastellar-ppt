@@ -1,4 +1,4 @@
-# ST Layout & Composition Rules
+# Metastellar Layout & Composition Rules
 
 ## Layout selection
 Right-click slide → Layout. Choose by slide type:
@@ -16,7 +16,7 @@ When generating programmatically, replicate the "Title Only" layout: a title pla
 top, everything else as free shapes.
 
 ## The key message bar
-The single most distinctive ST slide element. The title explains the slide; **the message
+The single most distinctive Metastellar slide element. The title explains the slide; **the message
 bar states the one thing the audience should remember.**
 
 Why it matters: surfaces the core idea, enforces brand/visual consistency, improves
@@ -26,8 +26,8 @@ Attributes — keep them exactly as the template defines:
 - **Geometry** (16:9 = 13.333 in × 7.5 in): spans from the **left edge of the slide** to the
   **4th vertical guide**, and from the **3rd to the 5th horizontal guide** from the top.
   Working values: `x = 0, y ≈ 1.43 in, width ≈ 9.8 in, height ≈ 0.84 in`.
-- **Fill**: one of ST Yellow, ST Dark Blue, ST Light Blue, or the first shade of dark blue.
-- **Font**: **20 pt Arial, no exceptions.** Single color — white or dark blue (match the
+- **Fill**: one of Accent (indigo-500), Primary Dark (blue-800), Primary (blue-500), or the first shade of dark blue.
+- **Font**: **20 pt Segoe UI, no exceptions.** Single color — white or dark blue (match the
   fill for contrast: dark-blue text on yellow/light-blue, white text on dark blue).
 - Do not resize, reposition, or restyle beyond the allowed fills/text colors.
 
@@ -65,7 +65,7 @@ one critical highlight** only.
   *Lock aspect ratio* checked in Format Picture.
 - **Crop** via right-click → Crop; drag side/corner handles; you may reposition the image
   inside the crop window.
-- Source images from brand.st.com (ST-owned). **No AI-generated images.** Prefer SVG for
+- Source images from user assets (ST-owned). **No AI-generated images.** Prefer SVG for
   logos/icons/shapes; **never SmartArt.**
 
 ## Productivity conventions (apply when editing in PowerPoint)

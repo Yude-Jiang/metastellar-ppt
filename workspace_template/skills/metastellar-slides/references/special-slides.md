@@ -1,14 +1,14 @@
-# ST Special Slide Templates
+# Metastellar Special Slide Templates
 
 Dedicated layouts for deck openers, navigation, and section breaks. **Do not** use the
 Title-Only content frame or the 20 pt message bar on these slides — each has its own
-geometry from the official ST template.
+geometry from the official Metastellar template.
 
 Reference images are in this folder.
 
 ## When to use
 
-| Slide role | Archetype | Builder (`st_brand.py`) |
+| Slide role | Archetype | Builder (`slide_theme.py`) |
 |---|---|---|
 | Deck opening / cover | `presentation-title` | `presentation_title_slide(...)` |
 | Table of contents | `agenda` | `agenda_slide(...)` |
@@ -24,11 +24,11 @@ Reference images are in this folder.
 **Use for:** first slide of the deck — presentation name, event, or campaign title.
 
 **Structure:**
-- **Full-bleed ST Dark Blue** background (`#03234B`).
-- **Left accent:** thin vertical **ST Yellow** bar along the left edge (full height).
-- **Title:** large **white** Arial bold (~36 pt), left area (~x 1.1 in, y ~2.6 in).
-- **Presenter / subtitle:** smaller **white** Arial (~18 pt) directly below the title.
-- **ST logo:** top-right (from brand.st.com asset or `logo_path`).
+- **Full-bleed Primary Dark (blue-800)** background (`#1E40AF`).
+- **Left accent:** thin vertical **Accent (indigo-500)** bar along the left edge (full height).
+- **Title:** large **white** Segoe UI bold (~36 pt), left area (~x 1.1 in, y ~2.6 in).
+- **Presenter / subtitle:** smaller **white** Segoe UI (~18 pt) directly below the title.
+- **Logo:** top-right (from user assets asset or `logo_path`).
 
 **No** message bar, corner accent, or slide-number styling from content slides.
 
@@ -42,11 +42,11 @@ Reference images are in this folder.
 
 **Structure:**
 - **White** background.
-- **Title** “Agenda” (or localized equivalent): top-right, **ST Dark Blue** Arial bold (~32 pt).
+- **Title** “Agenda” (or localized equivalent): top-right, **Primary Dark (blue-800)** Segoe UI bold (~32 pt).
 - **Topic list:** 2 columns × up to 4 rows each (8 topics max recommended).
-  - Each row = **ST Yellow** square tile (~0.42 in) with a **dark-blue bold number** +
-    topic label to the right in ST Dark Blue ~14 pt.
-- **ST logo:** bottom-left.
+  - Each row = **Accent (indigo-500)** square tile (~0.42 in) with a **dark-blue bold number** +
+    topic label to the right in Primary Dark (blue-800) ~14 pt.
+- **Logo:** bottom-left.
 
 **No** message bar on this slide.
 
@@ -59,11 +59,11 @@ Reference images are in this folder.
 **Use for:** breaking the deck into chapters (before a group of content slides).
 
 **Structure:**
-- **Full-bleed ST Dark Blue** background.
+- **Full-bleed Primary Dark (blue-800)** background.
 - **Top yellow bar:** spans from ~¼ slide width to the right edge; height ~1.15 in.
-  - **Section name** in **ST Dark Blue** bold Arial (~30 pt), left-aligned inside the bar.
+  - **Section name** in **Primary Dark (blue-800)** bold Segoe UI (~30 pt), left-aligned inside the bar.
 - **Optional hero image:** centered in the body (below the bar); lock aspect ratio.
-- **Footer:** light dotted rule above the logo safe zone; **ST logo** bottom-left.
+- **Footer:** light dotted rule above the logo safe zone; **Logo** bottom-left.
 
 **No** message bar. Do not reuse the old centered yellow “section divider” pattern —
 use this top-bar layout instead.

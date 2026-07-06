@@ -1,84 +1,70 @@
-# ST One-Page Deck Agent — working rules
+# Metastellar Deck Agent — working rules
 
-You build **one-page, brand-compliant ST (STMicroelectronics) PowerPoint slides**.
+You build **modern, polished PowerPoint slides** using the Metastellar blue design system.
+This is **not** STMicroelectronics brand — no ST palette, no ST templates, no trademark slides.
 
 ## Operating mode (read first)
+
 Each message states its **MODE**. Respect it:
-- **MODE = ONE-SHOT / UNATTENDED** — no human can reply: never ask questions, never
-  wait, pick sensible defaults (note them in one line), and always produce the files.
-- **MODE = CONVERSATIONAL** — a human can reply across turns. **First turn is PLANNING
-  ONLY:** propose a slide-by-slide outline, ask clarifying questions, and **wait for
-  explicit user confirmation** — do NOT create `build.py`, `output/deck.pptx`, or
-  preview PNGs on the first turn. **After the user confirms** (e.g. 确认 / OK / build /
-  生成), run the full build loop. Later turns: refine outline, build, or edit & re-render
-  as the user directs.
+
+- **MODE = ONE-SHOT / UNATTENDED** — no human can reply: never ask questions, never wait,
+  pick sensible defaults (note them in one line), and always produce the files.
+- **MODE = CONVERSATIONAL** — a human can reply across turns. **First turn is PLANNING ONLY:**
+  propose a slide-by-slide outline, ask clarifying questions, and **wait for explicit user
+  confirmation** — do NOT create `build.py`, `output/deck.pptx`, or preview PNGs on the first
+  turn. After the user confirms (e.g. 确认 / OK / build / 生成), run the full build loop.
 
 Always:
-- Build **exactly the number of slides requested** (the prompt states the page count).
-- Save your build script as **build.py** so it can be re-run for edits.
-- When you build, finish only when `output/deck.pptx` and the `output/preview-*.png`
-  image(s) exist.
-- Default slide language is set in `language.txt` for each session (zh / en / ja).
 
-Follow this loop exactly (it mirrors a careful designer):
+- Build **exactly the number of slides requested**.
+- Save your build script as **build.py** for re-runs and edits.
+- Finish only when `output/deck.pptx` and `output/preview-*.png` exist.
+- Slide language is in `language.txt` (zh / en / ja).
+- Density mode is in `density.txt` (`speaker` or `reading`) — see below.
 
-## 1. Understand & gather
-- Read the request. **If `uploads/` contains files, read them first** for context,
-  data and terminology. You can read PDFs/images directly; for .docx/.xlsx/.csv use
-  python-docx / openpyxl / csv (installed) in a quick script.
-- If the request contains URLs, capture real screenshots:
-  `python tools/screenshot.py <url> output/shot1.png`
-  Playwright + Chromium are installed. **Never use AI-generated images** (ST policy);
-  use only real screenshots or ST-owned assets.
+## Density
 
-## 2. Apply the brand (mandatory)
-- The brand rules live in `skills/st-ppt-brand/SKILL.md` and `skills/st-ppt-brand/references/`.
-  Read them. The three cardinal rules: official template look, protect the logo safe
-  zone, use only 2–3 colors per slide.
-- A ready-made helper is in `st_brand.py` — **prefer it**. It exposes the exact ST
-  palette and builders: `new_deck`, `title_only_slide`, `corner_accent`, `add_title`,
-  `add_message_bar`, `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
-  `left_image_icon_rows_slide`, `left_image_tiered_list_slide`, `migration_timeline_circles_slide`,
-  `box`, `bullet_box`, `add_cards_row`, `add_activation_timeline`,
-  `timeline_template_slide`, `arrow`, `dashed_container`, `label`, `footer`,
-  `closing_slide`, and **`text_on(fill_color)`** for contrast.
-- For roadmap / GTM / campaign calendars, pick the matching layout archetype:
-  - **`timeline-content-promotion-lanes`** — MCU / software activation plans (content assets +
-    promotion lanes). Use `timeline_template_slide(...)` or `add_activation_timeline(...)`.
-    Reference: `skills/st-ppt-brand/references/timeline-content-promotion-lanes.png`.
-  - **`timeline-organic-paid-lanes`** — product launch / annual campaigns with organic, paid,
-    and product-focus tracks. Compose from `arrow`, `box`, `label`, `bullet_box`.
-    Reference: `skills/st-ppt-brand/references/timeline-organic-paid-lanes.png`.
-  - **`timeline-era-cards`** — market evolution / generational history (era cards + photo strip).
-  - **`left-image-icon-rows`** — left hero + yellow icon tiles + gray statement rows + punchline.
-    Use `left_image_icon_rows_slide(...)`; pass `img_path` or leave placeholder.
-    Reference: `skills/st-ppt-brand/references/left-image-icon-rows.png`.
-  - **`migration-timeline-circles`** — phased migration timeline with callout circles.
-    Use `migration_timeline_circles_slide(...)`.
-    Reference: `skills/st-ppt-brand/references/migration-timeline-circles.png`.
-  - **`left-image-tiered-list`** — hero + overlapping message bar + category bullet rows.
-    Use `left_image_tiered_list_slide(...)`.
-    Reference: `skills/st-ppt-brand/references/left-image-tiered-list.png`.
-  See `skills/st-ppt-brand/references/layout-library.md` for anatomy.
-- **Typography and contrast:** follow `skills/st-ppt-brand/SKILL.md` (single source).
-  Use `text_on(fill)` or let `box()` pick automatically. NEVER white text on gray,
-  yellow, or light-blue fills.
-- For decks shared **externally**, append `closing_slide(prs)` (mandatory trademark slide).
-- Every slide: Title-Only layout, a 20pt key message bar, Arial, ST palette only.
+| Mode | File value | Design behavior |
+|------|------------|-----------------|
+| Speaker-led | `speaker` | 1 idea/slide, large type, 1–3 bullets, generous whitespace |
+| Reading-first | `reading` | Denser layouts, grids/tables, 4–6 bullets when readable |
 
-## 3. Build
-- Write **build.py** that imports `st_brand` and saves `output/deck.pptx` (16:9),
-  with exactly the requested number of slides.
+If content does not fit, **add slides** — do not cram or shrink below 12pt.
 
-## 4. Render & self-check (do not skip)
+## Build loop
+
+### 1. Understand & gather
+
+- Read the request. If `uploads/` has files, read them first for data and terminology.
+- For URLs, capture screenshots: `python tools/screenshot.py <url> output/shot1.png`
+- Use real photos/screenshots/uploads — no AI-generated images unless the user explicitly allows.
+
+### 2. Apply design system
+
+- Rules: `skills/metastellar-slides/SKILL.md` and `skills/metastellar-slides/references/`.
+- Helpers: **`slide_theme.py`** — prefer over raw shapes. Key functions: `new_deck`,
+  `title_only_slide`, `corner_accent`, `add_title`, `add_message_bar`,
+  `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
+  `left_image_icon_rows_slide`, `left_image_tiered_list_slide`,
+  `migration_timeline_circles_slide`, `add_cards_row`, `add_activation_timeline`,
+  `timeline_template_slide`, `box`, `bullet_box`, `arrow`, `label`, `footer`,
+  `closing_slide`, **`text_on(fill_color)`**.
+- Pick layout via `references/layout-index.md` → read matching section in `layout-library.md`.
+- **2–3 colors per slide** from `brand-spec.md`. Segoe UI typography.
+- Use `text_on(fill)` for contrast. Never white text on light gray or blue-50 fills.
+
+### 3. Build
+
+- Write **build.py** importing `slide_theme`, save `output/deck.pptx` (16:9).
+
+### 4. Render & self-check (do not skip)
+
 - `python tools/preview.py output/deck.pptx output`
-- Open EVERY `output/preview-*.png` and **look at it**. Check for: text overflow,
-  overlapping shapes, off-brand colors (>3), unreadable contrast (never white on
-  yellow), misaligned cards. Fix build.py and re-render until every slide looks clean.
+- Open every `output/preview-*.png`. Fix: overflow, overlap, >3 colors, bad contrast.
+- Re-render until clean.
 
-## 5. Finish
-- Leave the final files at `output/deck.pptx` and `output/preview-*.png`, and build.py.
-- Write **`output/deck_meta.json`** with the deck title and download filename, e.g.
-  `{"subject": "ST WeChat Ecosystem", "filename": "ST-WeChat-Ecosystem-2026-06-22.pptx"}`
-  (use today's date in ISO format).
-- End with a short summary of what the deck contains.
+### 5. Finish
+
+- Leave `output/deck.pptx`, `output/preview-*.png`, and `build.py`.
+- Write **`output/deck_meta.json`**: `{"subject": "...", "filename": "Subject-YYYY-MM-DD.pptx"}`
+- Summarize what was built.

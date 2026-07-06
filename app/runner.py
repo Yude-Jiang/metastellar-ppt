@@ -1,12 +1,11 @@
-"""Cursor SDK orchestration for the ST deck tool.
+"""Cursor SDK orchestration for the Metastellar deck tool.
 
 Two modes share one persistent AsyncClient (created in main.py lifespan):
 
 * One-shot (default): /generate builds in a single unattended run (no questions);
   /edit re-runs in the same workspace to apply a change.
 * Conversational (optional): /chat/start + /chat/send keep ONE live agent per
-  session in memory, so the agent can ask, propose, build, and revise across turns
-  (like a normal chat). Requires the service pinned to a single instance.
+  session in memory. Requires the service pinned to a single instance.
 
 Produced files: <session>/output/deck.pptx and preview-1..N.png.
 """
@@ -19,15 +18,32 @@ from pathlib import Path
 from cursor_sdk import LocalAgentOptions
 
 from . import config
-from .sessions import collect_outputs, new_session, restore_session, save_session, session_language
+from .sessions import (
+    collect_outputs,
+    new_session,
+    restore_session,
+    save_session,
+    session_density,
+    session_language,
+)
 
-# Live conversational sessions: sid -> {ws, agent, pages}
 chat_sessions: dict[str, dict] = {}
 
 _LANG_LABELS = {
     "zh": "Simplified Chinese (简体中文)",
     "en": "English",
     "ja": "Japanese (日本語)",
+}
+
+_DENSITY_LABELS = {
+    "speaker": (
+        "Density: speaker-led — one idea per slide, large type, 1–3 bullets max, "
+        "generous whitespace; split content across more slides when needed."
+    ),
+    "reading": (
+        "Density: reading-first — self-contained slides with grids/tables/cards; "
+        "4–6 bullets or 4–6 cards when readable; still no overflow or cramped text."
+    ),
 }
 
 
@@ -40,16 +56,20 @@ def _lang_instruction(lang: str) -> str:
     )
 
 
-_COMMON = """Build EXACTLY {pages} slide(s). Follow skills/st-ppt-brand/SKILL.md for \
-palette, typography, contrast, and layout. Prefer st_brand.py helpers \
-(text_on, closing_slide for external decks). Never use AI images. {uploads}{language} \
+def _density_instruction(density: str) -> str:
+    return _DENSITY_LABELS.get(density, _DENSITY_LABELS["speaker"])
+
+
+_COMMON = """Build EXACTLY {pages} slide(s). Follow skills/metastellar-slides/SKILL.md for \
+palette, typography, contrast, and layout. Prefer slide_theme.py helpers (text_on). \
+Use real screenshots/uploads — no AI images unless the user explicitly allows. \
+{uploads}{language}{density} \
 When you build: save build.py, write output/deck_meta.json with \
 {{"subject":"<deck title>","filename":"<Subject-Line-YYYY-MM-DD>.pptx"}}, run \
 `python tools/preview.py output/deck.pptx output`, OPEN every preview PNG, fix \
-contrast/size issues, re-render until clean."""
+contrast/overflow issues, re-render until clean."""
 
-GEN_PROMPT = """You are generating a deck for an internal STMicroelectronics (ST) \
-audience. Follow AGENTS.md.
+GEN_PROMPT = """You are generating a presentation deck. Follow AGENTS.md.
 
 MODE = ONE-SHOT, UNATTENDED. There is NO human to answer you.
 - Do NOT ask questions, do NOT wait for confirmation, do NOT stop at a draft.
@@ -66,25 +86,25 @@ EDIT_PROMPT = """Edit the EXISTING deck in this workspace (build.py + \
 output/deck.pptx). MODE = ONE-SHOT, UNATTENDED: do NOT ask questions. Apply the \
 change, rebuild by running build.py, run `python tools/preview.py output/deck.pptx \
 output`, OPEN every output/preview-*.png to verify. Keep everything else unchanged \
-and ST-brand-compliant. Done only when deck.pptx + preview PNG(s) are updated.
+and on-theme. Done only when deck.pptx + preview PNG(s) are updated.
 
 {language}
+{density}
 
 Requested change:
 {instruction}
 """
 
-CHAT_FIRST = """You are an ST (STMicroelectronics) deck-designer assistant in a \
-CHAT with a user. Follow AGENTS.md.
+CHAT_FIRST = """You are a presentation-design assistant in a CHAT with a user. \
+Follow AGENTS.md.
 
 MODE = CONVERSATIONAL — **FIRST TURN = PLANNING ONLY**. A human is on the other side.
 - Do NOT run build.py, do NOT write output/deck.pptx, and do NOT run preview.py on \
 this turn. No building yet.
 - Read the request{uploads_hint}and reflect it in your plan.
-- Reply with a structured **slide-by-slide outline** (slide #, title, 20pt message-bar \
+- Reply with a structured **slide-by-slide outline** (slide #, title, message-bar \
 text, main visual / bullets per slide).
-- Ask **1–3 short clarifying questions** if audience, language, external vs internal, \
-or key data is unclear.
+- Ask **1–3 short clarifying questions** if audience, tone, or key data is unclear.
 - End by asking the user to **confirm or refine** (e.g. reply 「确认」/ OK / build to \
 proceed). State clearly that you will build only after they confirm.
 
@@ -112,17 +132,17 @@ def _uploads_note(has_uploads: bool) -> str:
     )
 
 
-def _common(pages: int, has_uploads: bool, language: str) -> str:
+def _common(pages: int, has_uploads: bool, language: str, density: str) -> str:
     pages = max(1, min(config.MAX_PAGES, int(pages or 1)))
     lang_block = _lang_instruction(language) + " "
+    density_block = _density_instruction(density) + " "
     return _COMMON.format(
         pages=pages,
         uploads=_uploads_note(has_uploads),
         language=lang_block,
+        density=density_block,
     )
 
-
-# ---------------- agent plumbing ----------------
 
 async def _create_agent(client, ws: Path):
     return await client.agents.create(
@@ -164,8 +184,6 @@ def _need_key() -> bool:
     return not os.environ.get("CURSOR_API_KEY")
 
 
-# ---------------- one-shot mode ----------------
-
 async def run_generate(
     client,
     request_text: str,
@@ -175,13 +193,15 @@ async def run_generate(
     emit,
     has_uploads: bool,
     language: str = "zh",
+    density: str = "speaker",
 ):
     if _need_key():
         await emit("error", "CURSOR_API_KEY is not set on the server.")
         return collect_outputs(sid, ws)
     lang = session_language(ws)
+    dens = session_density(ws)
     prompt = GEN_PROMPT.format(
-        common=_common(pages, has_uploads, lang), request=request_text
+        common=_common(pages, has_uploads, lang, dens), request=request_text
     )
     agent = await _create_agent(client, ws)
     try:
@@ -202,9 +222,12 @@ async def run_edit(client, sid: str, instruction: str, emit):
     agent = await _create_agent(client, ws)
     try:
         lang = session_language(ws)
+        dens = session_density(ws)
         run = await agent.send(
             EDIT_PROMPT.format(
-                language=_lang_instruction(lang), instruction=instruction
+                language=_lang_instruction(lang),
+                density=_density_instruction(dens),
+                instruction=instruction,
             )
         )
         await _stream_run(run, emit)
@@ -215,8 +238,6 @@ async def run_edit(client, sid: str, instruction: str, emit):
     return collect_outputs(sid, ws)
 
 
-# ---------------- conversational mode ----------------
-
 async def chat_start(
     client,
     request_text: str,
@@ -226,15 +247,17 @@ async def chat_start(
     emit,
     has_uploads: bool,
     language: str = "zh",
+    density: str = "speaker",
 ):
     if _need_key():
         await emit("error", "CURSOR_API_KEY is not set on the server.")
         return collect_outputs(sid, ws)
     lang = session_language(ws)
+    dens = session_density(ws)
     agent = await _create_agent(client, ws)
     chat_sessions[sid] = {"ws": ws, "agent": agent, "pages": pages}
     prompt = CHAT_FIRST.format(
-        common=_common(pages, has_uploads, lang),
+        common=_common(pages, has_uploads, lang, dens),
         request=request_text,
         uploads_hint=" and ./uploads/ " if has_uploads else " ",
     )
@@ -254,7 +277,8 @@ async def chat_send(client, sid: str, message: str, emit):
         )
         return {"session": sid, "deck": None, "previews": [], "download_name": None}
     run = await s["agent"].send(
-        f"{CHAT_REMINDER}\n\n{_lang_instruction(session_language(s['ws']))}\n\nUser: {message}"
+        f"{CHAT_REMINDER}\n\n{_lang_instruction(session_language(s['ws']))}\n\n"
+        f"{_density_instruction(session_density(s['ws']))}\n\nUser: {message}"
     )
     await _stream_run(run, emit)
     await save_session(sid, s["ws"])
