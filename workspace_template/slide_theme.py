@@ -43,7 +43,7 @@ SLIDE_H = 7.5
 
 
 # Dark fills: white text. Light fills: PRIMARY_DARK text.
-_DARK_FILLS = frozenset({BLUE_800, BLUE_600, INDIGO_600})
+_DARK_FILLS = frozenset({BLUE_800, BLUE_600, INDIGO_600, INDIGO_500, GRAY_800})
 
 
 def ramp_text(step):
@@ -649,6 +649,191 @@ def footer(slide, text):
         r.font.size = Pt(9)
         r.font.color.rgb = BLUE_800
     return tb
+
+
+# ---- Marketing agency / client pitch layouts (premium) ----
+
+def agency_cover_slide(prs, headline, client, subtitle=None, date=None, logo_path=None):
+    """Premium pitch cover — dark field, accent bar, large headline, client line."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, BLUE_800)
+    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
+                                 Inches(SLIDE_W), Inches(0.12))
+    fill(bar, ACCENT)
+    accent = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0.12),
+                                    Inches(0.1), Inches(SLIDE_H - 0.12))
+    fill(accent, ACCENT)
+    tb = slide.shapes.add_textbox(Inches(1.05), Inches(2.1), Inches(10.5), Inches(1.6))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.word_wrap = True
+    tf.text = headline
+    _style(tf, WHITE, 40, bold=True, align=PP_ALIGN.LEFT)
+    ctb = slide.shapes.add_textbox(Inches(1.05), Inches(3.85), Inches(9.0), Inches(0.55))
+    ctf = ctb.text_frame
+    no_autofit(ctf)
+    ctf.text = client
+    _style(ctf, BLUE_100, 20, bold=False, align=PP_ALIGN.LEFT)
+    if subtitle:
+        stb = slide.shapes.add_textbox(Inches(1.05), Inches(4.45), Inches(9.0), Inches(0.45))
+        stf = stb.text_frame
+        no_autofit(stf)
+        stf.text = subtitle
+        _style(stf, GRAY_300, 15, bold=False, align=PP_ALIGN.LEFT)
+    if date:
+        footer(slide, date)
+    _place_logo(slide, logo_path, 10.85, 0.35, height=0.48)
+    return slide
+
+
+def agency_section_slide(prs, section_num, title, subtitle=None, logo_path=None):
+    """Section divider for agency pitches — oversized index + bold title."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, GRAY_50)
+    num_tb = slide.shapes.add_textbox(Inches(0.55), Inches(0.85), Inches(4.5), Inches(2.2))
+    ntf = num_tb.text_frame
+    no_autofit(ntf)
+    ntf.text = str(section_num).zfill(2)
+    _style(ntf, BLUE_100, 96, bold=True, align=PP_ALIGN.LEFT)
+    rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.55), Inches(3.05),
+                                  Inches(2.4), Inches(0.06))
+    fill(rule, ACCENT)
+    tb = slide.shapes.add_textbox(Inches(0.55), Inches(3.35), Inches(11.5), Inches(1.0))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.text = title
+    _style(tf, BLUE_800, 34, bold=True, align=PP_ALIGN.LEFT)
+    if subtitle:
+        stb = slide.shapes.add_textbox(Inches(0.55), Inches(4.35), Inches(11.0), Inches(0.55))
+        stf = stb.text_frame
+        no_autofit(stf)
+        stf.text = subtitle
+        _style(stf, GRAY_600, 16, bold=False, align=PP_ALIGN.LEFT)
+    _place_logo(slide, logo_path, 11.35, 6.55, height=0.38)
+    return slide
+
+
+def big_idea_slide(prs, statement, caption=None, logo_path=None):
+    """Single bold insight — editorial, high whitespace (agency 'north star' slide)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, WHITE)
+    corner_accent(slide)
+    tb = slide.shapes.add_textbox(Inches(1.0), Inches(2.15), Inches(11.3), Inches(2.4))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.word_wrap = True
+    tf.text = statement
+    tf.paragraphs[0].alignment = PP_ALIGN.CENTER
+    _style(tf, BLUE_800, 36, bold=True, align=PP_ALIGN.CENTER)
+    rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5.4), Inches(4.75),
+                                  Inches(2.5), Inches(0.06))
+    fill(rule, ACCENT)
+    if caption:
+        ctb = slide.shapes.add_textbox(Inches(1.5), Inches(5.05), Inches(10.3), Inches(0.55))
+        ctf = ctb.text_frame
+        no_autofit(ctf)
+        ctf.text = caption
+        ctf.paragraphs[0].alignment = PP_ALIGN.CENTER
+        _style(ctf, GRAY_600, 15, bold=False, align=PP_ALIGN.CENTER)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def metrics_3up_slide(prs, title, metrics, message=None, logo_path=None):
+    """Three hero KPIs — classic agency results / projection slide.
+
+    metrics: [{"value": "38%", "label": "Reach uplift", "note": "vs. baseline"}, ...]
+    """
+    slide = title_only_slide(prs)
+    corner_accent(slide)
+    add_title(slide, title, align=PP_ALIGN.LEFT, size=26)
+    if message:
+        add_message_bar(slide, message, fill_color=PRIMARY_DARK)
+    n = min(len(metrics), 3)
+    if not n:
+        return slide
+    gap = 0.45
+    left = 0.55
+    total_w = SLIDE_W - 1.1
+    w = (total_w - gap * (n - 1)) / n
+    top = 2.35 if message else 1.65
+    for i, m in enumerate(metrics[:3]):
+        x = left + i * (w + gap)
+        panel = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(top),
+                                       Inches(w), Inches(4.35))
+        fill(panel, GRAY_50 if i % 2 == 0 else BLUE_50)
+        panel.line.color.rgb = GRAY_200
+        panel.line.width = Pt(1)
+        vtb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 0.55),
+                                       Inches(w - 0.4), Inches(1.2))
+        vtf = vtb.text_frame
+        no_autofit(vtf)
+        vtf.text = str(m.get("value", ""))
+        vtf.paragraphs[0].alignment = PP_ALIGN.CENTER
+        _style(vtf, BLUE_600 if i == 1 else BLUE_800, 44, bold=True, align=PP_ALIGN.CENTER)
+        ltb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 1.85),
+                                       Inches(w - 0.4), Inches(0.5))
+        ltf = ltb.text_frame
+        no_autofit(ltf)
+        ltf.text = m.get("label", "")
+        ltf.paragraphs[0].alignment = PP_ALIGN.CENTER
+        _style(ltf, GRAY_800, 14, bold=True, align=PP_ALIGN.CENTER)
+        note = m.get("note")
+        if note:
+            ntb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 2.45),
+                                           Inches(w - 0.4), Inches(0.45))
+            ntf = ntb.text_frame
+            no_autofit(ntf)
+            ntf.text = note
+            ntf.paragraphs[0].alignment = PP_ALIGN.CENTER
+            _style(ntf, GRAY_600, 11, bold=False, align=PP_ALIGN.CENTER)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def challenge_solution_slide(prs, title, challenge_bullets, solution_bullets, logo_path=None):
+    """Split challenge vs. agency approach — proposal staple."""
+    slide = title_only_slide(prs)
+    corner_accent(slide)
+    add_title(slide, title, align=PP_ALIGN.LEFT, size=26)
+    col_w = 5.85
+    gap = 0.55
+    x0 = 0.55
+    x1 = x0 + col_w + gap
+    top = 1.35
+    head_h = 0.52
+    body_h = 5.15
+    box(slide, x0, top, col_w, head_h, "Challenge", GRAY_800, WHITE, size=14, bold=True)
+    bullet_box(slide, x0, top + head_h + 0.08, col_w, body_h, challenge_bullets[:5],
+               shade=GRAY_100, size=13)
+    box(slide, x1, top, col_w, head_h, "Our approach", BLUE_600, WHITE, size=14, bold=True)
+    bullet_box(slide, x1, top + head_h + 0.08, col_w, body_h, solution_bullets[:5],
+               shade=BLUE_50, size=13)
+    _place_logo(slide, logo_path, 11.35, 6.55, height=0.38)
+    return slide
+
+
+def pillar_strategy_slide(prs, title, pillars, message=None, logo_path=None):
+    """3–4 strategic pillars — agency strategy / recommendation slide.
+
+    pillars: [{"title": "...", "bullets": ["...", ...]}, ...]
+    """
+    slide = title_only_slide(prs)
+    corner_accent(slide)
+    add_title(slide, title, align=PP_ALIGN.LEFT, size=26)
+    if message:
+        add_message_bar(slide, message, fill_color=ACCENT_LIGHT)
+    cards = [{"title": p.get("title", ""), "bullets": p.get("bullets", [])} for p in pillars[:4]]
+    add_cards_row(slide, cards, top=2.2 if message else 1.55, bottom=6.85,
+                  header="accent", img_ratio=3.5)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def campaign_timeline_slide(prs, title, message, checkpoints, top_items=None, bottom_items=None):
+    """Agency campaign / rollout timeline — wraps timeline_template_slide."""
+    return timeline_template_slide(prs, title, message, checkpoints,
+                                   top_items=top_items, bottom_items=bottom_items)
 
 
 CLOSING_FOOTER = "Thank you"

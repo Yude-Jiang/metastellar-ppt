@@ -1,73 +1,75 @@
 ---
 name: metastellar-slides
 description: >
-  Create polished, modern PowerPoint decks with the Metastellar blue design system.
-  Use for pitches, reports, talks, and internal presentations. Pick layouts by content
-  shape and density; prefer slide_theme.py helpers for consistent palette and contrast.
+  Create premium marketing-agency pitch decks and polished presentations with the
+  Metastellar blue design system. Optimized for agencies presenting strategies,
+  campaigns, and proposals to clients. Prefer agency layouts from slide_theme.py.
 ---
 
 # Metastellar Slides
 
-Build **16:9 PowerPoint (.pptx)** decks with a cohesive blue Tailwind-inspired theme.
-This is **not** STMicroelectronics brand — design for clarity, hierarchy, and modern corporate polish.
+Build **16:9 PowerPoint (.pptx)** decks for **marketing agencies presenting to clients**.
+Default aesthetic: **premium, editorial, confident** — large type, generous whitespace,
+clear story arc (challenge → insight → strategy → plan → proof → ask).
+
+Read **`references/agency-pitch-playbook.md`** first for deck structure and tone.
 
 ## Workflow
 
 1. Read `AGENTS.md` for the full build loop.
-2. Read `references/brand-spec.md` for the palette (2–3 colors per slide max).
-3. Pick a layout from `references/layout-index.md`, then read that section in `layout-library.md`.
-4. Prefer **`slide_theme.py`** builders over hand-placed shapes.
-5. Render previews and fix overflow before finishing.
+2. Read `references/agency-pitch-playbook.md` for client-pitch positioning.
+3. Read `references/brand-spec.md` for palette (2–3 colors per slide max).
+4. Pick layout from `references/layout-index.md` (agency section prioritized).
+5. Prefer **`slide_theme.py`** agency builders — see below.
+6. Render previews and fix overflow before finishing.
 
-## Density (ask or infer)
+## Agency-first builders (`slide_theme.py`)
 
-| Mode | Best for | Behavior |
-|------|----------|----------|
-| **Speaker-led** | Talks, pitches, live presenting | 1 idea/slide, large type, 1–3 bullets, more slides |
-| **Reading-first** | Reports, handouts, async review | Denser grids/tables, 4–6 bullets or cards when readable |
+| Moment | Builder |
+|--------|---------|
+| Pitch cover | `agency_cover_slide` |
+| Section divider | `agency_section_slide` |
+| North-star insight | `big_idea_slide` |
+| Challenge vs approach | `challenge_solution_slide` |
+| Strategic pillars | `pillar_strategy_slide` |
+| KPI / results | `metrics_3up_slide` |
+| Campaign rollout | `campaign_timeline_slide` |
+| Hero + proof rows | `left_image_icon_rows_slide` |
+| Close | `closing_slide` |
 
-If content exceeds the slide, **split slides** — never shrink text until unreadable.
+Also available: `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
+`left_image_tiered_list_slide`, `migration_timeline_circles_slide`, `add_cards_row`,
+`timeline_template_slide`, `add_message_bar`, `text_on(fill)`.
+
+## Density
+
+| Mode | Best for | Agency behavior |
+|------|----------|-----------------|
+| **Speaker-led** | Live client pitch | Default for agency — 1 idea/slide, hero metrics, minimal bullets |
+| **Reading-first** | Proposal PDF / async | Denser pillars and timelines; still premium, not cramped |
 
 ## Core rules
 
-- **16:9**, blank Title-Only layout, shapes placed manually or via helpers.
-- **Palette:** blue-800 / blue-500 / indigo-500 + gray neutrals. See `brand-spec.md`.
-- **Typography:** Segoe UI (fallback Arial). Title ~27pt, message bar 20pt, body 14pt.
-- **Contrast:** use `text_on(fill)` — white on dark fills, `PRIMARY_DARK` on light fills.
-- **Images:** real photos, screenshots, user uploads. No AI-generated imagery unless user explicitly allows.
-- **Message bar:** optional but recommended — `add_message_bar()` with `ACCENT_LIGHT` or `PRIMARY_DARK` fill.
-
-## Layout quick map
-
-See `references/layout-index.md` for the full archetype table.
-
-Common builders in `slide_theme.py`:
-
-| Archetype | Builder |
-|-----------|---------|
-| Title / agenda / section | `presentation_title_slide`, `agenda_slide`, `section_title_slide` |
-| Hero + icon rows | `left_image_icon_rows_slide` |
-| Hero + category list | `left_image_tiered_list_slide` |
-| Migration timeline | `migration_timeline_circles_slide` |
-| GTM / activation timeline | `timeline_template_slide`, `add_activation_timeline` |
-| Parallel cards | `add_cards_row` |
-| Thank-you close | `closing_slide` (optional) |
+- **16:9**, blank Title-Only layout.
+- **Palette:** blue-800 / blue-500 / indigo-500 + gray neutrals (`brand-spec.md`).
+- **Typography:** Segoe UI. Agency pitch titles 26–40pt; KPI values 44pt.
+- **Contrast:** `text_on(fill)` always.
+- **Images:** uploads, screenshots, real photography — no AI images unless allowed.
+- **Story:** follow playbook arc when structure not specified.
 
 ## Self-check
 
-After `python tools/preview.py output/deck.pptx output`:
-
-- No text overflow or overlapping panels
+- No overflow / overlap
 - ≤3 colors per slide
-- Readable contrast on every filled shape
-- 16:9 proportions preserved
+- Every slide passes the "client boardroom" test: would an agency partner show this as-is?
 
 ## References
 
 | File | Purpose |
 |------|---------|
-| `references/brand-spec.md` | Colors, type, contrast |
-| `references/layout-index.md` | Choose layout by content shape |
+| `references/agency-pitch-playbook.md` | **Start here** — pitch arc, tone, typography |
+| `references/brand-spec.md` | Colors, contrast |
+| `references/layout-index.md` | Layout picker (agency section) |
 | `references/layout-library.md` | Layout anatomy |
 | `references/pptx-implementation.md` | Code patterns |
 | `references/special-slides.md` | Title, agenda, section slides |

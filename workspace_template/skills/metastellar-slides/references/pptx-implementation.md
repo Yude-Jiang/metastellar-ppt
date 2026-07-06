@@ -356,8 +356,44 @@ left_image_tiered_list_slide(
 Shared helper `_place_image_or_placeholder(slide, image_path, x, y, w, h, label="Image")`
 inserts a real picture when `image_path` is set; otherwise draws a gray box for manual swap.
 
+## Agency pitch builders (client-facing)
+
+See `agency-pitch-playbook.md` for deck arc. Prefer importing from `slide_theme`:
+
+```python
+from slide_theme import (
+    new_deck, agency_cover_slide, agency_section_slide, big_idea_slide,
+    challenge_solution_slide, pillar_strategy_slide, metrics_3up_slide,
+    campaign_timeline_slide, closing_slide,
+)
+
+prs = new_deck()
+agency_cover_slide(prs, "Q3 Social Growth Strategy", "Acme Retail Co.",
+                   subtitle="Proposal · Metastellar Agency", date="July 2026")
+agency_section_slide(prs, 1, "Situation & opportunity",
+                     subtitle="Where the brand is today")
+big_idea_slide(prs, "Own the discovery moment before competitors do.",
+               caption="Strategic north star for H2")
+challenge_solution_slide(
+    prs, "Starting point",
+    challenge_bullets=["Flat organic reach", "Rising CAC", "Fragmented content"],
+    solution_bullets=["Always-on social engine", "Creator partnerships", "Full-funnel measurement"],
+)
+pillar_strategy_slide(prs, "Three growth pillars", [
+    {"title": "Content", "bullets": ["UGC hub", "Always-on calendar"]},
+    {"title": "Media", "bullets": ["Paid social", "Retail media"]},
+    {"title": "Measure", "bullets": ["MMM lite", "Weekly dashboards"]},
+], message="A focused plan — not a laundry list")
+metrics_3up_slide(prs, "Projected H2 impact", [
+    {"value": "+38%", "label": "Reach", "note": "vs H1"},
+    {"value": "2.4×", "label": "ROAS", "note": "paid social"},
+    {"value": "−22%", "label": "CPA", "note": "blended"},
+])
+closing_slide(prs, tagline="Let's build what's next.")
+prs.save("output/deck.pptx")
+```
+
 ## Reminders the code can't enforce — verify by eye
-- **2–3 colors per slide**; large areas use primary colors.
-- **Logo safe zone** kept clear.
-- **No AI images, no SmartArt**; images keep aspect ratio.
-- Run the **pre-share housecleaning** (`compliance-checklist.md`) before delivery.
+- **2–3 colors per slide**; premium whitespace for client pitches.
+- **No AI images** unless user allows; images keep aspect ratio.
+- Run preview PNG review before delivery.

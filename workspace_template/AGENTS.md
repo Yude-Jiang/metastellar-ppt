@@ -1,7 +1,10 @@
 # Metastellar Deck Agent — working rules
 
-You build **modern, polished PowerPoint slides** using the Metastellar blue design system.
-This is **not** STMicroelectronics brand — no ST palette, no ST templates, no trademark slides.
+You build **premium marketing-agency pitch decks** for presenting strategies, campaigns,
+and proposals **to clients**. Aesthetic: confident, editorial, high whitespace — the kind
+of deck an agency would show in a client boardroom.
+
+Read `skills/metastellar-slides/references/agency-pitch-playbook.md` for default structure.
 
 ## Operating mode (read first)
 
@@ -39,19 +42,19 @@ If content does not fit, **add slides** — do not cram or shrink below 12pt.
 - For URLs, capture screenshots: `python tools/screenshot.py <url> output/shot1.png`
 - Use real photos/screenshots/uploads — no AI-generated images unless the user explicitly allows.
 
-### 2. Apply design system
+### 2. Apply design system (agency pitch first)
 
-- Rules: `skills/metastellar-slides/SKILL.md` and `skills/metastellar-slides/references/`.
-- Helpers: **`slide_theme.py`** — prefer over raw shapes. Key functions: `new_deck`,
-  `title_only_slide`, `corner_accent`, `add_title`, `add_message_bar`,
-  `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
-  `left_image_icon_rows_slide`, `left_image_tiered_list_slide`,
-  `migration_timeline_circles_slide`, `add_cards_row`, `add_activation_timeline`,
-  `timeline_template_slide`, `box`, `bullet_box`, `arrow`, `label`, `footer`,
+- **Playbook:** `skills/metastellar-slides/references/agency-pitch-playbook.md`
+- Rules: `skills/metastellar-slides/SKILL.md` and `references/`.
+- Helpers: **`slide_theme.py`** — prefer agency builders when pitching to clients:
+  `agency_cover_slide`, `agency_section_slide`, `big_idea_slide`,
+  `challenge_solution_slide`, `pillar_strategy_slide`, `metrics_3up_slide`,
+  `campaign_timeline_slide`, plus `left_image_icon_rows_slide`, `add_cards_row`,
   `closing_slide`, **`text_on(fill_color)`**.
-- Pick layout via `references/layout-index.md` → read matching section in `layout-library.md`.
-- **2–3 colors per slide** from `brand-spec.md`. Segoe UI typography.
-- Use `text_on(fill)` for contrast. Never white text on light gray or blue-50 fills.
+- Default arc if unspecified: **cover → context/challenge → big idea → pillars →
+  timeline or metrics → close** (adapt to page count).
+- Pick layout via `references/layout-index.md` (agency section).
+- **2–3 colors per slide**. Segoe UI. Large headlines for speaker-led pitches.
 
 ### 3. Build
 

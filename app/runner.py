@@ -60,16 +60,19 @@ def _density_instruction(density: str) -> str:
     return _DENSITY_LABELS.get(density, _DENSITY_LABELS["speaker"])
 
 
-_COMMON = """Build EXACTLY {pages} slide(s). Follow skills/metastellar-slides/SKILL.md for \
-palette, typography, contrast, and layout. Prefer slide_theme.py helpers (text_on). \
-Use real screenshots/uploads — no AI images unless the user explicitly allows. \
-{uploads}{language}{density} \
+_COMMON = """Build EXACTLY {pages} slide(s). This is a **marketing agency pitch to a client** \
+unless the user says otherwise — premium, editorial layouts, confident whitespace. \
+Follow skills/metastellar-slides/SKILL.md and references/agency-pitch-playbook.md. \
+Prefer slide_theme.py agency builders (agency_cover_slide, big_idea_slide, \
+metrics_3up_slide, pillar_strategy_slide, challenge_solution_slide, \
+campaign_timeline_slide). Never use AI images unless allowed. {uploads}{language}{density} \
 When you build: save build.py, write output/deck_meta.json with \
 {{"subject":"<deck title>","filename":"<Subject-Line-YYYY-MM-DD>.pptx"}}, run \
 `python tools/preview.py output/deck.pptx output`, OPEN every preview PNG, fix \
 contrast/overflow issues, re-render until clean."""
 
-GEN_PROMPT = """You are generating a presentation deck. Follow AGENTS.md.
+GEN_PROMPT = """You are generating a **client-facing marketing agency pitch deck**. \
+Follow AGENTS.md and the agency pitch playbook.
 
 MODE = ONE-SHOT, UNATTENDED. There is NO human to answer you.
 - Do NOT ask questions, do NOT wait for confirmation, do NOT stop at a draft.
@@ -95,8 +98,8 @@ Requested change:
 {instruction}
 """
 
-CHAT_FIRST = """You are a presentation-design assistant in a CHAT with a user. \
-Follow AGENTS.md.
+CHAT_FIRST = """You are a **marketing agency pitch designer** in a CHAT with a user. \
+Follow AGENTS.md and agency-pitch-playbook.md.
 
 MODE = CONVERSATIONAL — **FIRST TURN = PLANNING ONLY**. A human is on the other side.
 - Do NOT run build.py, do NOT write output/deck.pptx, and do NOT run preview.py on \
