@@ -45,8 +45,6 @@
   .hdr-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .org{display:flex;align-items:center;gap:8px;color:var(--blue-100);font-size:12px;}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--green-500);box-shadow:0 0 0 3px rgba(34,197,94,.22);}
-  #tokenRow{display:none;align-items:center;gap:8px;font-size:12px;color:var(--blue-100);}
-  #tokenRow input{padding:6px 10px;border:0;border-radius:6px;font-size:12px;min-width:140px;}
   .hdr-lang-wrap{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:4px 10px 4px 8px;}
   .hdr-lang-icon{display:flex;align-items:center;color:var(--blue-100);flex:none;line-height:0;}
   .hdr-lang{display:flex;align-items:center;gap:2px;}
@@ -169,9 +167,6 @@
     <div class="brand"><b>Deck Agent</b><span data-i18n="brandSub">品牌合规 PPT · 一键成稿</span></div>
   </div>
   <div class="hdr-right">
-    <div id="tokenRow">
-      <label><span data-i18n="tokenLabel">访问口令</span> <input id="token" type="password" placeholder="ACCESS_TOKEN" autocomplete="off"/></label>
-    </div>
     <div class="hdr-lang-wrap">
       <span class="hdr-lang-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -272,7 +267,6 @@
 
 <script>
 const $ = s => document.querySelector(s);
-const LS_TOKEN = 'st_deck_token';
 const LS_SESSION = 'st_deck_session';
 const LS_CHAT = 'st_deck_chat';
 const LS_UI_LANG = 'st_deck_ui_lang';
@@ -294,7 +288,6 @@ const DECK_LANG_OPTIONS = [
 const I18N = {
   zh: {
     brandSub: '品牌合规 PPT · 一键成稿',
-    tokenLabel: '访问口令',
     panelBrief: '撰写需求',
     panelBriefSub: '贴需求 / URL，可附参考文档',
     reqPlaceholder: '例：根据上传文档做一页 ST 品牌合规 PPT 给领导汇报，突出三个核心数据…',
@@ -357,7 +350,6 @@ const I18N = {
   },
   en: {
     brandSub: 'Brand-compliant PPT · One-click decks',
-    tokenLabel: 'Access token',
     panelBrief: 'Your brief',
     panelBriefSub: 'Paste requirements / URLs; attach reference files',
     reqPlaceholder: 'e.g. One ST-brand slide for leadership, highlighting three key metrics from the upload…',
@@ -420,7 +412,6 @@ const I18N = {
   },
   ja: {
     brandSub: 'ブランド準拠 PPT · ワンクリック生成',
-    tokenLabel: 'アクセストークン',
     panelBrief: '要件入力',
     panelBriefSub: '要件 / URL を貼付、参考資料を添付可',
     reqPlaceholder: '例：アップロード資料から ST ブランド準拠の 1 枚スライドを作成、3 つの核心データを強調…',
@@ -491,7 +482,7 @@ let deckLang = 'zh';
 let abortCtl = null;
 let hadError = false;
 let streamBuf = { thinking: null, text: null };
-let appConfig = { max_pages: 6, auth_required: false };
+let appConfig = { max_pages: 6 };
 let slideCount = 0;
 
 try { currentSession = localStorage.getItem(LS_SESSION) || null; } catch (_) {}
@@ -618,27 +609,9 @@ function saveChatMode() {
   try { localStorage.setItem(LS_CHAT, chatActive ? '1' : '0'); } catch (_) {}
 }
 
-function authToken() {
-  return ($('#token').value || '').trim() || localStorage.getItem(LS_TOKEN) || '';
-}
-
-function authHeaders() {
-  const h = {};
-  const t = authToken();
-  if (t) h['X-Access-Token'] = t;
-  return h;
-}
-
 function fileUrl(path) {
-  let u = path;
-  const t = authToken();
-  if (t) u += (u.includes('?') ? '&' : '?') + 'access_token=' + encodeURIComponent(t);
+  const u = path;
   return u + (u.includes('?') ? '&' : '?') + 't=' + Date.now();
-}
-
-function saveToken() {
-  const t = ($('#token').value || '').trim();
-  if (t) localStorage.setItem(LS_TOKEN, t);
 }
 
 async function loadConfig() {
@@ -649,11 +622,6 @@ async function loadConfig() {
   buildPageSeg();
   initLangSegs();
   applyI18n();
-  if (appConfig.auth_required) {
-    $('#tokenRow').style.display = 'flex';
-    const saved = localStorage.getItem(LS_TOKEN);
-    if (saved) $('#token').value = saved;
-  }
 }
 
 function buildPageSeg() {
@@ -673,8 +641,6 @@ function buildPageSeg() {
   }
   if (pages > max) { pages = max; seg.lastChild?.classList.add('on'); }
 }
-
-$('#token').addEventListener('change', saveToken);
 
 function syncChatToggle() {
   $('#track').classList.toggle('on', chatActive);
@@ -854,7 +820,6 @@ function setBusy(running) {
 
 async function runStream(url, opts, statusEl) {
   hadError = false;
-  saveToken();
   setPill('run', t('pillRun'));
   showPhase('run');
   setBusy(true);
@@ -864,7 +829,7 @@ async function runStream(url, opts, statusEl) {
     const resp = await fetch(url, {
       ...opts,
       signal: abortCtl.signal,
-      headers: { ...authHeaders(), ...(opts.headers || {}) },
+      headers: { ...(opts.headers || {}) },
     });
     await streamSSE(resp, handle);
     if (hadError) setPill('err', t('pillErr'));

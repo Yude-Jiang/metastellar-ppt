@@ -9,7 +9,6 @@ TEMPLATE = ROOT / "workspace_template"
 SESSIONS = Path(os.environ.get("SESSIONS_DIR", "/tmp/sessions"))
 
 MAX_PAGES = int(os.environ.get("MAX_PAGES", "6"))
-ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN", "").strip()
 RATE_LIMIT_PER_MINUTE = int(os.environ.get("RATE_LIMIT_PER_MINUTE", "10"))
 MAX_UPLOAD_FILE_BYTES = int(
     os.environ.get("MAX_UPLOAD_FILE_BYTES", str(10 * 1024 * 1024))

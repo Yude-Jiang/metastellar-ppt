@@ -4,8 +4,6 @@ Modes:
   One-shot (default):  POST /generate (multipart)  +  POST /edit (json)
   Conversational:      POST /chat/start (multipart) +  POST /chat/send (json)
 
-Set ACCESS_TOKEN to require X-Access-Token (or ?access_token= for file URLs) on
-mutating routes and file downloads.
 Conversational mode keeps a live agent in memory — pin to --max-instances 1.
 """
 from __future__ import annotations
@@ -95,7 +93,6 @@ async def api_config():
     return JSONResponse(
         {
             "max_pages": config.MAX_PAGES,
-            "auth_required": bool(config.ACCESS_TOKEN),
             "max_upload_files": config.MAX_UPLOAD_FILES,
             "max_upload_file_mb": config.MAX_UPLOAD_FILE_BYTES // (1024 * 1024),
             "languages": ["zh", "en", "ja"],
@@ -116,8 +113,7 @@ def _sse(obj: dict) -> str:
 def _reject(request: Request) -> JSONResponse | None:
     err = guard_request(request)
     if err:
-        code = 401 if "Unauthorized" in err else 429
-        return JSONResponse({"error": err}, status_code=code)
+        return JSONResponse({"error": err}, status_code=429)
     return None
 
 

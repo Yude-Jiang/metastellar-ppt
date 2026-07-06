@@ -35,29 +35,7 @@ def check_rate_limit(request: Request) -> str | None:
     return None
 
 
-def _extract_token(request: Request) -> str:
-    token = request.headers.get("x-access-token", "").strip()
-    if token:
-        return token
-    auth = request.headers.get("authorization", "")
-    if auth.lower().startswith("bearer "):
-        return auth[7:].strip()
-    # img/a tags cannot send custom headers; file previews/downloads use query param.
-    return request.query_params.get("access_token", "").strip()
-
-
-def verify_access(request: Request) -> str | None:
-    if not config.ACCESS_TOKEN:
-        return None
-    if _extract_token(request) != config.ACCESS_TOKEN:
-        return "Unauthorized. Provide a valid access token."
-    return None
-
-
 def guard_request(request: Request) -> str | None:
-    err = verify_access(request)
-    if err:
-        return err
     return check_rate_limit(request)
 
 

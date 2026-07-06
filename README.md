@@ -6,7 +6,6 @@ Internal Cloud Run tool that generates ST-brand-compliant PowerPoint decks via t
 
 ```bash
 export CURSOR_API_KEY=your_key
-export ACCESS_TOKEN=choose-a-shared-secret   # optional but recommended
 pip install -r requirements.txt
 playwright install chromium
 uvicorn app.main:app --reload --port 8080
@@ -27,11 +26,9 @@ gcloud run deploy st-deck-agent \
   --allow-unauthenticated \
   --memory 2Gi --cpu 2 --timeout 600 \
   --concurrency 4 --max-instances 1 \
-  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest,ACCESS_TOKEN=ST_DECK_ACCESS_TOKEN:latest \
+  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
   --set-env-vars CURSOR_MODEL=composer-2.5
 ```
-
-> **Note:** Even with `--allow-unauthenticated`, set `ACCESS_TOKEN` (via Secret Manager or env) so only colleagues with the token can generate decks. Cloud Run IAP is an alternative.
 
 ## Environment variables
 
@@ -39,7 +36,6 @@ gcloud run deploy st-deck-agent \
 |----------|---------|-------------|
 | `CURSOR_API_KEY` | — | Required. Cursor API key (use Secret Manager in prod). |
 | `CURSOR_MODEL` | `composer-2.5` | Model for the agent. |
-| `ACCESS_TOKEN` | *(empty)* | If set, all generate/edit/chat/file routes require `X-Access-Token` header. |
 | `RATE_LIMIT_PER_MINUTE` | `10` | Per-IP rate limit for API routes. |
 | `MAX_PAGES` | `6` | Maximum slides per request. |
 | `MAX_UPLOAD_FILES` | `5` | Max reference files per request. |
@@ -76,6 +72,5 @@ The Docker image uses Liberation Sans as an Arial metric substitute for LibreOff
 
 ## Security notes
 
-- Set `ACCESS_TOKEN` before sharing the URL widely.
-- Session IDs are 12 hex chars — not a secret; token auth is required for production.
 - Upload limits and rate limiting are enabled by default.
+- Session IDs are 12 hex chars — not a secret; use Cloud Run IAP or network controls if you need stronger access control.
