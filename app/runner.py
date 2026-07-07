@@ -61,11 +61,13 @@ def _density_instruction(density: str) -> str:
 
 
 _COMMON = """Build EXACTLY {pages} slide(s). This is a **marketing agency pitch to a client** \
-unless the user says otherwise — premium, editorial layouts, confident whitespace. \
-Follow skills/metastellar-slides/SKILL.md and references/agency-pitch-playbook.md. \
-Prefer slide_theme.py agency builders (agency_cover_slide, big_idea_slide, \
-metrics_3up_slide, pillar_strategy_slide, challenge_solution_slide, \
-campaign_timeline_slide). Never use AI images unless allowed. {uploads}{language}{density} \
+unless the user says otherwise — Digital Enterprise Deck System: blue mono palette, \
+Arial typography, § chrome on every inner slide, KPI cards for data. \
+Follow skills/metastellar-slides/SKILL.md, digital-enterprise-deck.md, agency-pitch-playbook.md. \
+Prefer slide_theme.py builders (agency_cover_slide, agenda_slide, agency_section_slide, \
+big_idea_slide, metrics_3up_slide, kpi_card, contact_slide, pillar_strategy_slide, \
+challenge_solution_slide, campaign_timeline_slide). Use BRAND_DEEP for dark slides — \
+no indigo, no second hue, no italic. Never use AI images unless allowed. {uploads}{language}{density} \
 When you build: save build.py, write output/deck_meta.json with \
 {{"subject":"<deck title>","filename":"<Subject-Line-YYYY-MM-DD>.pptx"}}, run \
 `python tools/preview.py output/deck.pptx output`, OPEN every preview PNG, fix \

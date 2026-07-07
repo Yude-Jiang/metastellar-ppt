@@ -1,54 +1,84 @@
-# Metastellar Brand Spec — Colors & Typography
+# MetaStellar Brand Spec — Digital Enterprise Deck System
 
-## Primary palette (blue system)
+**MetaStellar · 智元星启** — dashboard-driven enterprise aesthetic. Blue mono palette,
+Arial typography, data UI as primary visual language.
 
-| Role | Name | Hex | RGB | Use |
-|------|------|-----|-----|-----|
-| Title / dark fill | blue-800 | `#1E40AF` | 30, 64, 175 | Titles, dark message bars, primary boxes |
-| Emphasis | blue-600 | `#2563EB` | 37, 99, 235 | Hover states, secondary headers |
-| Primary | blue-500 | `#3B82F6` | 59, 130, 246 | Message bars, links, icons |
-| Accent | indigo-500 | `#6366F1` | 99, 102, 241 | Tiles, numbered badges, highlights |
-| Accent deep | indigo-600 | `#4F46E5` | 79, 70, 229 | Gradient end, emphasis bars |
-| Light bg | blue-50 | `#EFF6FF` | 239, 246, 255 | Subtle panels |
-| Light border | blue-100 | `#DBEAFE` | 219, 234, 254 | Borders, selected states |
+## Design principles (non-negotiable)
 
-## Success (optional, 1 accent per deck)
+1. **Single hue** — blue only; use lightness for hierarchy. No yellow, pink, green, orange, purple accents.
+2. **Sans-serif only** — Arial + Noto Sans SC (Microsoft YaHei in pptx). No serifs, no italic.
+3. **Dark surfaces** — `#0F1E4A` (`BRAND_DEEP`). Never pure black `#000`.
+4. **Data UI** — KPI cards, badges, charts are structure, not decoration.
+5. **Chrome on every slide** — `§` section pill, sheet id `NN / 20`, mono metadata.
+6. **Bilingual** — English display, Chinese sub (smaller, lighter).
 
-| green-500 | `#22C55E` | Success callouts, completion states |
-| emerald-500 | `#10B981` | Step-complete markers |
+## Color tokens
 
-## Neutrals
+| Token | Hex | Use |
+|-------|-----|-----|
+| `INK` | `#0B1220` | Headings |
+| `INK_2` | `#1E293B` | Body strong |
+| `INK_3` | `#475569` | Body |
+| `INK_4` | `#94A3B8` | Muted / footer |
+| `PAPER` | `#FFFFFF` | Main background |
+| `PAPER_2` | `#F8FAFC` | Card background |
+| `PAPER_3` | `#F1F5F9` | Recessed panels |
+| `LINE` | `#E2E8F0` | Border default |
+| `LINE_2` | `#CBD5E1` | Border strong |
+| `BRAND` | `#1E40AF` | Primary — headings, buttons |
+| `BRAND_2` | `#2563EB` | Interactive |
+| `BRAND_3` | `#3B82F6` | Lighter interactive / CTA on dark |
+| `BRAND_4` | `#60A5FA` | Soft blue |
+| `BRAND_DEEP` | `#0F1E4A` | Dark slide background |
+| `BRAND_PALE` | `#DBEAFE` | Pill borders |
+| `BRAND_TINT` | `#EFF6FF` | Pill / badge background |
+| `BRAND_GLOW` | `#93C5FD` | Text on dark surfaces |
+| `OK` | `#10B981` | Live dots only — sparingly |
 
-| white | `#FFFFFF` | Card backgrounds |
-| gray-50 | `#F9FAFB` | Page/slide background feel |
-| gray-100 | `#F3F4F6` | Bullet boxes, light panels |
-| gray-200 | `#E5E7EB` | Borders |
-| gray-300 | `#D1D5DB` | Placeholders |
-| gray-600 | `#4B5563` | Body text secondary |
-| gray-800 | `#1F2937` | Body text primary |
+## Shading ramp (blue mono)
 
-## Shading ramp (graded headers / process steps)
-
-Darkest → lightest: `#1E40AF` → `#2563EB` → `#3B82F6` → `#DBEAFE`
+Darkest → lightest: `BRAND_DEEP` → `BRAND` → `BRAND_2` → `BRAND_3`
 
 Use `RAMP` in `slide_theme.py` or `ramp_text(step)` for contrast-safe text.
 
-## Typography
+## Logo mark
 
-- **Font:** Segoe UI (PowerPoint-safe modern sans). Arial acceptable fallback only.
-- **Title:** 27pt bold, `PRIMARY_DARK` on light slides / white on dark slides
-- **Message bar:** 20pt bold
-- **Body:** 14pt (12pt min, 20pt max for inline emphasis)
+MetaStellar symbol = **twin elliptical orbits (±28°)** + **open triangle** (3 disconnected strokes).
+Wordmark: **MetaStellar** / **智元星启**.
 
-## Contrast rules
+Draw with `draw_metastellar_mark()` / `add_wordmark()` in `slide_theme.py`.
 
-- **White text** on: blue-800, blue-600, indigo-600, indigo-500 (dark fills)
-- **PRIMARY_DARK text** on: white, gray-100, blue-50, blue-100
-- **Never** white text on gray-100, blue-50, or indigo-500 at small sizes without checking preview
-- Use `text_on(fill_color)` in `slide_theme.py`
+## Typography (pptx)
+
+| Role | Font | Size | Weight |
+|------|------|------|--------|
+| Cover headline | Arial | 36–40pt | Bold |
+| Section title | Arial | 32–34pt | Bold |
+| Big idea | Arial | 36pt | Bold |
+| KPI value | Arial | 44pt | Bold, tabular-nums |
+| Slide title | Arial | 26–27pt | Bold |
+| Body | Arial | 13–14pt | Regular |
+| Mono label | Consolas | 10–11pt | Medium, UPPERCASE, 0.14em tracking |
+| Chinese sub | Microsoft YaHei | ~30% of EN | Regular |
+
+**Forbidden:** italic, serif, second hue, emoji icons.
+
+## Contrast
+
+- **White text** on: `BRAND_DEEP`, `BRAND`, `BRAND_2`
+- **BRAND text** on: `PAPER`, `PAPER_2`, `PAPER_3`, `BRAND_TINT`
+- Use `text_on(fill_color)` always
 
 ## Per-slide limits
 
-- **2–3 colors maximum** per slide (excluding white/gray neutrals)
-- Large areas use primary blues or gray-100 panels
-- One accent color (indigo or green) per slide at most
+- **2–3 colors** per slide (excluding white/gray neutrals)
+- Dark slides ~20–30% of deck (cover panel, dividers, contact)
+- One visual anchor per slide (hero title, KPI row, or mockup)
+
+## Forbidden (anti-patterns)
+
+- Indigo / purple / multi-hue gradients
+- Segoe UI as primary (legacy — use Arial)
+- Slides without `§` section id or sheet footer
+- Glassmorphism on white backgrounds
+- Pie charts / 3D charts as hero visuals

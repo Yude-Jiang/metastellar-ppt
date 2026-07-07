@@ -1,8 +1,8 @@
 """Metastellar slide theme library for python-pptx.
 
-Encodes the rules from skills/metastellar-slides (palette, typography, message bar,
-Title-Only content slides, card rows, and diagram primitives) so generated decks
-are on-brand by construction. Import this from the deck-build script.
+Digital Enterprise Deck System — dashboard-driven enterprise aesthetic.
+Blue mono palette, Arial typography, § chrome, KPI cards, MetaStellar mark.
+Import from the deck-build script; rules live in skills/metastellar-slides/.
 """
 from pptx import Presentation
 from pptx.util import Inches, Pt
@@ -11,39 +11,61 @@ from pptx.enum.text import MSO_AUTO_SIZE, PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.oxml.ns import qn
 
-# ---- Metastellar palette (Tailwind blue system) ----
-BLUE_500      = RGBColor(0x3B, 0x82, 0xF6)   # primary / links
-BLUE_600      = RGBColor(0x25, 0x6E, 0xEB)   # emphasis / hover
-INDIGO_500    = RGBColor(0x63, 0x66, 0xF1)   # accent tiles
-INDIGO_600    = RGBColor(0x4F, 0x46, 0xE5)   # gradient end
-BLUE_50       = RGBColor(0xEF, 0xF6, 0xFF)   # light background
-BLUE_100      = RGBColor(0xDB, 0xEA, 0xFE)   # borders / selected
-BLUE_800      = RGBColor(0x1E, 0x40, 0xAF)   # title / dark fills
-GREEN_500     = RGBColor(0x22, 0xC5, 0x5E)   # success
-WHITE         = RGBColor(0xFF, 0xFF, 0xFF)
-GRAY_50       = RGBColor(0xF9, 0xFA, 0xFB)
-GRAY_100      = RGBColor(0xF3, 0xF4, 0xF6)
-GRAY_200      = RGBColor(0xE5, 0xE7, 0xEB)
-GRAY_300      = RGBColor(0xD1, 0xD5, 0xDB)
-GRAY_600      = RGBColor(0x4B, 0x55, 0x63)
-GRAY_800      = RGBColor(0x1F, 0x29, 0x37)
-# Semantic aliases
-PRIMARY_DARK  = BLUE_800
-ACCENT        = INDIGO_500
-ACCENT_LIGHT  = BLUE_500
-GRAY_1        = GRAY_100
-GRAY_2        = GRAY_200
-GRAY_3        = GRAY_300
-SLATE         = BLUE_600
-RAMP = [BLUE_800, BLUE_600, BLUE_500, BLUE_100]
+# ---- Design tokens (Digital Enterprise Deck System) ----
+# Ink
+INK           = RGBColor(0x0B, 0x12, 0x20)
+INK_2         = RGBColor(0x1E, 0x29, 0x3B)
+INK_3         = RGBColor(0x47, 0x55, 0x69)
+INK_4         = RGBColor(0x94, 0xA3, 0xB8)
+INK_5         = RGBColor(0xCB, 0xD5, 0xE1)
+# Paper
+PAPER         = RGBColor(0xFF, 0xFF, 0xFF)
+PAPER_2       = RGBColor(0xF8, 0xFA, 0xFC)
+PAPER_3       = RGBColor(0xF1, 0xF5, 0xF9)
+LINE          = RGBColor(0xE2, 0xE8, 0xF0)
+LINE_2        = RGBColor(0xCB, 0xD5, 0xE1)
+# Brand (blue mono — single hue only)
+BRAND         = RGBColor(0x1E, 0x40, 0xAF)
+BRAND_2       = RGBColor(0x25, 0x63, 0xEB)
+BRAND_3       = RGBColor(0x3B, 0x82, 0xF6)
+BRAND_4       = RGBColor(0x60, 0xA5, 0xFA)
+BRAND_DEEP    = RGBColor(0x0F, 0x1E, 0x4A)   # dark surfaces — never pure black
+BRAND_PALE    = RGBColor(0xDB, 0xEA, 0xFE)
+BRAND_TINT    = RGBColor(0xEF, 0xF6, 0xFF)
+BRAND_GLOW    = RGBColor(0x93, 0xC5, 0xFD)
+OK            = RGBColor(0x10, 0xB9, 0x81)   # live dots only
+WHITE         = PAPER
 
-FONT = "Segoe UI"
-SLIDE_W = 13.333
-SLIDE_H = 7.5
+# Back-compat aliases (legacy builder names)
+BLUE_500      = BRAND_3
+BLUE_600      = BRAND_2
+BLUE_50       = BRAND_TINT
+BLUE_100      = BRAND_PALE
+BLUE_800      = BRAND
+PRIMARY_DARK  = BRAND
+ACCENT        = BRAND_3
+ACCENT_LIGHT  = BRAND_3
+GRAY_50       = PAPER_2
+GRAY_100      = PAPER_3
+GRAY_200      = LINE
+GRAY_300      = LINE_2
+GRAY_600      = INK_3
+GRAY_800      = INK_2
+GRAY_1        = PAPER_3
+GRAY_2        = LINE
+GRAY_3        = LINE_2
+SLATE         = BRAND_2
+RAMP = [BRAND_DEEP, BRAND, BRAND_2, BRAND_3]
 
+FONT          = "Arial"
+FONT_CN       = "Microsoft YaHei"
+FONT_MONO     = "Consolas"
+SLIDE_W       = 13.333
+SLIDE_H       = 7.5
+CHROME_PAD    = 0.67   # ~96px at 1920 — slide chrome inset
 
-# Dark fills: white text. Light fills: PRIMARY_DARK text.
-_DARK_FILLS = frozenset({BLUE_800, BLUE_600, INDIGO_600, INDIGO_500, GRAY_800})
+# Dark fills: white text. Light fills: BRAND text.
+_DARK_FILLS = frozenset({BRAND_DEEP, BRAND, BRAND_2, INK, INK_2})
 
 
 def ramp_text(step):
@@ -51,15 +73,207 @@ def ramp_text(step):
 
 
 def text_on(fill_color):
-    """Mandatory contrast: white on dark fills; PRIMARY_DARK on light fills."""
+    """Mandatory contrast: white on dark fills; BRAND on light fills."""
     if fill_color in _DARK_FILLS:
         return WHITE
-    return BLUE_800
+    return BRAND
 
 
-BODY_SIZE = 14   # prefer 14 pt per brand spec (12 min, 20 max)
+BODY_SIZE = 14
 TITLE_SIZE = 27
 MSG_BAR_SIZE = 20
+KPI_VALUE_SIZE = 44
+MONO_LABEL_SIZE = 10
+
+
+def _style(tf, color, size_pt, bold=False, font=FONT, align=None, mono=False):
+    for p in tf.paragraphs:
+        if align is not None:
+            p.alignment = align
+        for r in p.runs:
+            r.font.name = FONT_MONO if mono else font
+            r.font.size = Pt(size_pt)
+            r.font.bold = bold
+            r.font.color.rgb = color
+            if mono:
+                r.font.name = FONT_MONO
+
+
+def draw_metastellar_mark(slide, cx, cy, size_in, color=BRAND):
+    """MetaStellar symbol — twin orbits + open triangle (3 strokes)."""
+    s = size_in
+    half = s / 2
+    for rot in (-28, 28):
+        ov = slide.shapes.add_shape(
+            MSO_SHAPE.OVAL,
+            Inches(cx - half), Inches(cy - half * 0.35),
+            Inches(s), Inches(s * 0.35),
+        )
+        ov.rotation = rot
+        ov.fill.background()
+        ov.line.color.rgb = color
+        ov.line.width = Pt(2)
+    # Triangle strokes (open peak)
+    lx, rx = cx - half * 0.38, cx + half * 0.38
+    top_y, bot_y = cy - half * 0.36, cy + half * 0.32
+    mid_y = cy + half * 0.18
+    for x1, y1, x2, y2 in (
+        (lx, bot_y, cx - half * 0.06, top_y),
+        (cx + half * 0.06, top_y, rx, bot_y),
+        (lx + half * 0.12, mid_y, rx - half * 0.12, mid_y),
+    ):
+        ln = slide.shapes.add_connector(
+            MSO_CONNECTOR.STRAIGHT, Inches(x1), Inches(y1), Inches(x2), Inches(y2)
+        )
+        ln.line.color.rgb = color
+        ln.line.width = Pt(2)
+
+
+def add_wordmark(slide, left, top, dark=False, compact=False):
+    """MetaStellar lockup — mark + MetaStellar / 智元星启."""
+    mark_h = 0.32 if compact else 0.42
+    draw_metastellar_mark(slide, left + mark_h / 2, top + mark_h / 2, mark_h, WHITE if dark else BRAND)
+    tx = left + mark_h + 0.14
+    en_size = 11 if compact else 14
+    tb = slide.shapes.add_textbox(Inches(tx), Inches(top), Inches(2.8), Inches(0.55 if not compact else 0.4))
+    tf = tb.text_frame
+    no_autofit(tf)
+    tf.text = "MetaStellar"
+    _style(tf, WHITE if dark else INK, en_size, bold=True, align=PP_ALIGN.LEFT)
+    if not compact:
+        p = tf.add_paragraph()
+        p.text = "智元星启"
+        for r in p.runs:
+            r.font.name = FONT_CN
+            r.font.size = Pt(9)
+            r.font.color.rgb = WHITE if dark else INK_3
+
+
+def add_slide_header(slide, section_num, section_name, section_title=None,
+                     section_cn=None, rhs_meta=None, dark=False):
+    """§ chapter pill + section title + optional rhs meta (every inner slide)."""
+    y = CHROME_PAD * 0.45
+    pill = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(CHROME_PAD), Inches(y), Inches(1.55), Inches(0.28),
+    )
+    fill(pill, BRAND_TINT if not dark else BRAND)
+    pill.line.color.rgb = BRAND_PALE if not dark else BRAND_2
+    pill.line.width = Pt(1)
+    ptf = pill.text_frame
+    no_autofit(ptf)
+    ptf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    ptf.margin_left = Inches(0.08)
+    sec = section_name or "SECTION"
+    ptf.text = f"§ {str(section_num).zfill(2)} / {sec.upper()}"
+    _style(ptf, BRAND if not dark else WHITE, MONO_LABEL_SIZE, bold=True, mono=True)
+
+    title_x = CHROME_PAD + 1.7
+    title_text = section_title or ""
+    if title_text:
+        ttb = slide.shapes.add_textbox(Inches(title_x), Inches(y - 0.02), Inches(6.5), Inches(0.35))
+        ttf = ttb.text_frame
+        no_autofit(ttf)
+        ttf.text = title_text
+        if section_cn:
+            p = ttf.add_paragraph()
+            p.text = f"· {section_cn}"
+            for r in p.runs:
+                r.font.name = FONT_CN
+                r.font.size = Pt(11)
+                r.font.color.rgb = INK_3 if not dark else BRAND_GLOW
+        _style(ttf, INK_2 if not dark else WHITE, 12, bold=True, align=PP_ALIGN.LEFT)
+
+    if rhs_meta:
+        rtb = slide.shapes.add_textbox(Inches(9.2), Inches(y), Inches(3.5), Inches(0.3))
+        rtf = rtb.text_frame
+        no_autofit(rtf)
+        rtf.text = rhs_meta
+        rtf.paragraphs[0].alignment = PP_ALIGN.RIGHT
+        _style(rtf, INK_4 if not dark else BRAND_GLOW, MONO_LABEL_SIZE, mono=True, align=PP_ALIGN.RIGHT)
+
+    rule = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(CHROME_PAD), Inches(y + 0.38),
+        Inches(SLIDE_W - 2 * CHROME_PAD), Inches(0.01),
+    )
+    fill(rule, LINE if not dark else BRAND_2)
+    return pill
+
+
+def add_slide_footer(slide, left_text="© MetaStellar", sheet_num=1, total=20, dark=False):
+    """Bottom chrome — brand line left, sheet id right."""
+    y = SLIDE_H - 0.55
+    rule = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(CHROME_PAD), Inches(y),
+        Inches(SLIDE_W - 2 * CHROME_PAD), Inches(0.01),
+    )
+    fill(rule, LINE if not dark else BRAND_2)
+    ltb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(y + 0.1), Inches(6.0), Inches(0.28))
+    ltf = ltb.text_frame
+    no_autofit(ltf)
+    ltf.text = left_text
+    _style(ltf, INK_4 if not dark else BRAND_GLOW, 9, mono=True)
+    rtb = slide.shapes.add_textbox(Inches(10.5), Inches(y + 0.1), Inches(2.2), Inches(0.28))
+    rtf = rtb.text_frame
+    no_autofit(rtf)
+    rtf.text = f"{str(sheet_num).zfill(2)} / {str(total).zfill(2)}"
+    rtf.paragraphs[0].alignment = PP_ALIGN.RIGHT
+    _style(rtf, INK_4 if not dark else BRAND_GLOW, 9, mono=True, align=PP_ALIGN.RIGHT)
+
+
+def kpi_card(slide, x, y, w, h, label, value, unit=None, desc=None, badge=None, featured=False):
+    """KPI tile — core data UI component (1 featured = BRAND_DEEP anchor)."""
+    bg = BRAND_DEEP if featured else PAPER_2
+    tc = WHITE if featured else INK
+    sub_c = BRAND_GLOW if featured else INK_3
+    card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
+    fill(card, bg)
+    card.line.color.rgb = BRAND_DEEP if featured else LINE
+    card.line.width = Pt(1)
+
+    ltb = slide.shapes.add_textbox(Inches(x + 0.22), Inches(y + 0.2), Inches(w - 0.44), Inches(0.3))
+    ltf = ltb.text_frame
+    no_autofit(ltf)
+    ltf.text = label.upper()
+    _style(ltf, sub_c, MONO_LABEL_SIZE, bold=True, mono=True)
+
+    if badge:
+        btw = min(1.1, w * 0.38)
+        badge_sh = slide.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            Inches(x + w - btw - 0.22), Inches(y + 0.18), Inches(btw), Inches(0.26),
+        )
+        fill(badge_sh, BRAND_3 if featured else BRAND_TINT)
+        badge_sh.line.color.rgb = BRAND_2 if featured else BRAND_PALE
+        badge_sh.line.width = Pt(1)
+        btf = badge_sh.text_frame
+        no_autofit(btf)
+        btf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        btf.text = badge
+        _style(btf, WHITE if featured else BRAND, 9, bold=True, mono=True, align=PP_ALIGN.CENTER)
+
+    vtb = slide.shapes.add_textbox(Inches(x + 0.22), Inches(y + h - 1.35), Inches(w - 0.44), Inches(0.95))
+    vtf = vtb.text_frame
+    no_autofit(vtf)
+    vtf.text = str(value)
+    _style(vtf, tc, KPI_VALUE_SIZE, bold=True, align=PP_ALIGN.LEFT)
+    if unit:
+        p = vtf.add_paragraph()
+        p.text = unit
+        for r in p.runs:
+            r.font.name = FONT_MONO
+            r.font.size = Pt(14)
+            r.font.color.rgb = sub_c
+
+    if desc:
+        dtb = slide.shapes.add_textbox(Inches(x + 0.22), Inches(y + h - 0.42), Inches(w - 0.44), Inches(0.32))
+        dtf = dtb.text_frame
+        no_autofit(dtf)
+        dtf.text = desc
+        _style(dtf, sub_c, 11, bold=False)
+    return card
 
 
 def new_deck():
@@ -87,12 +301,10 @@ def _place_logo(slide, logo_path, left, top, height=0.48):
 
 
 def presentation_title_slide(prs, title, presenter=None, logo_path=None):
-    """Main / presentation title — navy field, left accent bar, white title (see special-slides.md)."""
+    """Main title — BRAND_DEEP field, MetaStellar mark, white headline."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, BLUE_800)
-    accent = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
-                                    Inches(0.14), Inches(SLIDE_H))
-    fill(accent, ACCENT)
+    _slide_bg(slide, BRAND_DEEP)
+    add_wordmark(slide, CHROME_PAD, 0.35, dark=True, compact=True)
     tb = slide.shapes.add_textbox(Inches(1.1), Inches(2.55), Inches(9.5), Inches(1.15))
     tf = tb.text_frame
     no_autofit(tf)
@@ -103,75 +315,69 @@ def presentation_title_slide(prs, title, presenter=None, logo_path=None):
         ptf = ptb.text_frame
         no_autofit(ptf)
         ptf.text = presenter
-        _style(ptf, WHITE, 18, bold=False, align=PP_ALIGN.LEFT)
+        _style(ptf, BRAND_GLOW, 18, bold=False, align=PP_ALIGN.LEFT)
     _place_logo(slide, logo_path, 11.35, 0.38, height=0.5)
+    add_slide_footer(slide, sheet_num=1, total=20, dark=True)
     return slide
 
 
-def agenda_slide(prs, topics, title="Agenda", logo_path=None, columns=2):
-    """Agenda / table of contents — white field, accent numbered tiles (see special-slides.md)."""
+def agenda_slide(prs, topics, title="Agenda", logo_path=None, columns=1, sheet_num=6, total=20):
+    """Agenda — left hero + right numbered rows with § pills."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, WHITE)
-    tb = slide.shapes.add_textbox(Inches(9.6), Inches(0.32), Inches(3.4), Inches(0.9))
+    _slide_bg(slide, PAPER)
+    add_wordmark(slide, CHROME_PAD, 0.35, compact=True)
+    tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(1.2), Inches(4.2), Inches(1.0))
     tf = tb.text_frame
     no_autofit(tf)
     tf.text = title
-    tf.paragraphs[0].alignment = PP_ALIGN.RIGHT
-    _style(tf, BLUE_800, 32, bold=True, align=PP_ALIGN.RIGHT)
+    _style(tf, INK, 28, bold=True, align=PP_ALIGN.LEFT)
     n = len(topics)
-    cols = max(1, min(columns, 2))
-    rows = (n + cols - 1) // cols
-    col_x = [1.35, 7.05]
-    row_y0 = 1.55
-    row_gap = 1.05
-    tile = 0.42
+    row_y0 = 1.15
+    row_gap = 0.72
+    rx = 5.2
     for i, topic in enumerate(topics):
-        col = i // rows if rows else 0
-        row = i % rows if rows else 0
-        if col >= cols:
-            col = cols - 1
-        x = col_x[col]
-        y = row_y0 + row * row_gap
-        sq = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y),
-                                    Inches(tile), Inches(tile))
-        fill(sq, ACCENT)
-        stf = sq.text_frame
-        no_autofit(stf)
-        stf.vertical_anchor = MSO_ANCHOR.MIDDLE
-        stf.text = str(i + 1)
-        for p in stf.paragraphs:
-            p.alignment = PP_ALIGN.CENTER
-        _style(stf, BLUE_800, 14, bold=True, align=PP_ALIGN.CENTER)
-        label = slide.shapes.add_textbox(Inches(x + tile + 0.18), Inches(y + 0.06),
-                                         Inches(4.8), Inches(0.38))
+        y = row_y0 + i * row_gap
+        pill = slide.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE, Inches(rx), Inches(y), Inches(0.55), Inches(0.28),
+        )
+        fill(pill, BRAND_TINT)
+        pill.line.color.rgb = BRAND_PALE
+        pill.line.width = Pt(1)
+        ptf = pill.text_frame
+        no_autofit(ptf)
+        ptf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        ptf.text = f"§ {str(i + 1).zfill(2)}"
+        _style(ptf, BRAND, 9, bold=True, mono=True, align=PP_ALIGN.CENTER)
+        label = slide.shapes.add_textbox(Inches(rx + 0.68), Inches(y - 0.02), Inches(6.8), Inches(0.38))
         ltf = label.text_frame
         no_autofit(ltf)
         ltf.vertical_anchor = MSO_ANCHOR.MIDDLE
         ltf.text = topic
-        _style(ltf, BLUE_800, 14, bold=False, align=PP_ALIGN.LEFT)
+        _style(ltf, INK_2, 14, bold=False, align=PP_ALIGN.LEFT)
     _place_logo(slide, logo_path, 0.45, 6.55, height=0.42)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
     return slide
 
 
-def section_title_slide(prs, title, image_path=None, logo_path=None):
-    """Section break — navy field, top accent bar, optional hero image (see special-slides.md)."""
+def section_title_slide(prs, title, image_path=None, logo_path=None, section_num=7):
+    """Section divider — BRAND_DEEP + § number + kicker."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, BLUE_800)
-    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(3.35), Inches(0),
-                                 Inches(SLIDE_W - 3.35), Inches(1.15))
-    fill(bar, ACCENT)
-    tf = bar.text_frame
+    _slide_bg(slide, BRAND_DEEP)
+    add_wordmark(slide, CHROME_PAD, 0.35, dark=True, compact=True)
+    num_tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(2.0), Inches(5.5), Inches(1.8))
+    ntf = num_tb.text_frame
+    no_autofit(ntf)
+    ntf.text = str(section_num).zfill(2)
+    _style(ntf, BRAND_GLOW, 72, bold=True, align=PP_ALIGN.LEFT)
+    tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(3.65), Inches(10.5), Inches(1.0))
+    tf = tb.text_frame
     no_autofit(tf)
-    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    tf.margin_left = Inches(0.35)
     tf.text = title
-    _style(tf, BLUE_800, 30, bold=True, align=PP_ALIGN.LEFT)
+    _style(tf, WHITE, 32, bold=True, align=PP_ALIGN.LEFT)
     if image_path:
-        slide.shapes.add_picture(image_path, Inches(2.2), Inches(1.65),
-                                 width=Inches(8.9), height=Inches(4.35))
-    rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.45), Inches(6.72),
-                                  Inches(12.4), Inches(0.02))
-    fill(rule, GRAY_3)
+        slide.shapes.add_picture(image_path, Inches(7.5), Inches(1.65),
+                                 width=Inches(5.0), height=Inches(4.35))
+    add_slide_footer(slide, sheet_num=section_num, total=20, dark=True)
     _place_logo(slide, logo_path, 0.45, 6.85, height=0.38)
     return slide
 
@@ -369,23 +575,17 @@ def no_autofit(tf):
     tf.auto_size = MSO_AUTO_SIZE.NONE
 
 
-def _style(tf, color, size_pt, bold=False, font=FONT, align=None):
-    for p in tf.paragraphs:
-        if align is not None:
-            p.alignment = align
-        for r in p.runs:
-            r.font.name = font
-            r.font.size = Pt(size_pt)
-            r.font.bold = bold
-            r.font.color.rgb = color
-
-
 def corner_accent(slide):
-    """Thin accent block, top-right (template accent)."""
-    a = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(12.55), Inches(0.0),
+    """Top-right brand tile (replaces indigo accent block)."""
+    a = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(12.35), Inches(0.0),
                                Inches(0.78), Inches(0.34))
-    fill(a, BLUE_800)
+    fill(a, BRAND)
     return a
+
+
+def _style_runs_legacy(tf, color, size_pt, bold=False, font=FONT, align=None):
+    """Alias kept for internal helpers that predate mono support."""
+    _style(tf, color, size_pt, bold=bold, font=font, align=align)
 
 
 def add_title(slide, text, subtitle=None, align=PP_ALIGN.RIGHT, size=27):
@@ -653,140 +853,160 @@ def footer(slide, text):
 
 # ---- Marketing agency / client pitch layouts (premium) ----
 
-def agency_cover_slide(prs, headline, client, subtitle=None, date=None, logo_path=None):
-    """Premium pitch cover — dark field, accent bar, large headline, client line."""
+def agency_cover_slide(prs, headline, client, subtitle=None, date=None, logo_path=None,
+                       metrics=None, sheet_num=1, total=20):
+    """Opener — left hero title + right BRAND_DEEP metric panel."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, BLUE_800)
-    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
-                                 Inches(SLIDE_W), Inches(0.12))
-    fill(bar, ACCENT)
-    accent = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0.12),
-                                    Inches(0.1), Inches(SLIDE_H - 0.12))
-    fill(accent, ACCENT)
-    tb = slide.shapes.add_textbox(Inches(1.05), Inches(2.1), Inches(10.5), Inches(1.6))
+    _slide_bg(slide, PAPER)
+    add_wordmark(slide, CHROME_PAD, 0.35, compact=True)
+    tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(1.85), Inches(7.2), Inches(2.2))
     tf = tb.text_frame
     no_autofit(tf)
     tf.word_wrap = True
     tf.text = headline
-    _style(tf, WHITE, 40, bold=True, align=PP_ALIGN.LEFT)
-    ctb = slide.shapes.add_textbox(Inches(1.05), Inches(3.85), Inches(9.0), Inches(0.55))
+    _style(tf, INK, 40, bold=True, align=PP_ALIGN.LEFT)
+    ctb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.15), Inches(7.0), Inches(0.55))
     ctf = ctb.text_frame
     no_autofit(ctf)
     ctf.text = client
-    _style(ctf, BLUE_100, 20, bold=False, align=PP_ALIGN.LEFT)
+    _style(ctf, BRAND, 20, bold=True, align=PP_ALIGN.LEFT)
     if subtitle:
-        stb = slide.shapes.add_textbox(Inches(1.05), Inches(4.45), Inches(9.0), Inches(0.45))
+        stb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.75), Inches(7.0), Inches(0.55))
         stf = stb.text_frame
         no_autofit(stf)
         stf.text = subtitle
-        _style(stf, GRAY_300, 15, bold=False, align=PP_ALIGN.LEFT)
+        _style(stf, INK_3, 15, bold=False, align=PP_ALIGN.LEFT)
+    panel_x = 8.35
+    panel = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE, Inches(panel_x), Inches(0), Inches(SLIDE_W - panel_x), Inches(SLIDE_H),
+    )
+    fill(panel, BRAND_DEEP)
+    metrics = metrics or [
+        {"label": "Projects", "value": "24"},
+        {"label": "Brands", "value": "86"},
+        {"label": "Brand lift", "value": "3.4", "unit": "×"},
+        {"label": "NPS", "value": "72"},
+    ]
+    my = 0.85
+    mh = 1.35
+    for m in metrics[:4]:
+        kpi_card(slide, panel_x + 0.35, my, SLIDE_W - panel_x - 0.7, mh,
+                 m.get("label", ""), m.get("value", ""), unit=m.get("unit"),
+                 desc=m.get("desc"), badge=m.get("badge"), featured=False)
+        my += mh + 0.22
     if date:
-        footer(slide, date)
-    _place_logo(slide, logo_path, 10.85, 0.35, height=0.48)
+        add_slide_footer(slide, left_text=date, sheet_num=sheet_num, total=total)
+    else:
+        add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, panel_x + 0.35, 0.35, height=0.42)
     return slide
 
 
-def agency_section_slide(prs, section_num, title, subtitle=None, logo_path=None):
-    """Section divider for agency pitches — oversized index + bold title."""
+def agency_section_slide(prs, section_num, title, subtitle=None, logo_path=None, sheet_num=7, total=20):
+    """Section divider — BRAND_DEEP, oversized § index, kicker pill."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, GRAY_50)
-    num_tb = slide.shapes.add_textbox(Inches(0.55), Inches(0.85), Inches(4.5), Inches(2.2))
+    _slide_bg(slide, BRAND_DEEP)
+    add_wordmark(slide, CHROME_PAD, 0.35, dark=True, compact=True)
+    pill = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(CHROME_PAD), Inches(1.35), Inches(1.8), Inches(0.3),
+    )
+    fill(pill, BRAND)
+    ptf = pill.text_frame
+    no_autofit(ptf)
+    ptf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    ptf.margin_left = Inches(0.1)
+    ptf.text = f"§ {str(section_num).zfill(2)}"
+    _style(ptf, WHITE, MONO_LABEL_SIZE, bold=True, mono=True)
+    num_tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(2.0), Inches(5.0), Inches(1.6))
     ntf = num_tb.text_frame
     no_autofit(ntf)
     ntf.text = str(section_num).zfill(2)
-    _style(ntf, BLUE_100, 96, bold=True, align=PP_ALIGN.LEFT)
-    rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.55), Inches(3.05),
-                                  Inches(2.4), Inches(0.06))
-    fill(rule, ACCENT)
-    tb = slide.shapes.add_textbox(Inches(0.55), Inches(3.35), Inches(11.5), Inches(1.0))
+    _style(ntf, BRAND_GLOW, 88, bold=True, align=PP_ALIGN.LEFT)
+    tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(3.55), Inches(11.0), Inches(1.0))
     tf = tb.text_frame
     no_autofit(tf)
     tf.text = title
-    _style(tf, BLUE_800, 34, bold=True, align=PP_ALIGN.LEFT)
+    _style(tf, WHITE, 34, bold=True, align=PP_ALIGN.LEFT)
     if subtitle:
-        stb = slide.shapes.add_textbox(Inches(0.55), Inches(4.35), Inches(11.0), Inches(0.55))
+        stb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.55), Inches(11.0), Inches(0.55))
         stf = stb.text_frame
         no_autofit(stf)
         stf.text = subtitle
-        _style(stf, GRAY_600, 16, bold=False, align=PP_ALIGN.LEFT)
+        _style(stf, BRAND_GLOW, 16, bold=False, align=PP_ALIGN.LEFT)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total, dark=True)
     _place_logo(slide, logo_path, 11.35, 6.55, height=0.38)
     return slide
 
 
-def big_idea_slide(prs, statement, caption=None, logo_path=None):
-    """Single bold insight — editorial, high whitespace (agency 'north star' slide)."""
+def big_idea_slide(prs, statement, caption=None, logo_path=None, section_num=8, sheet_num=8, total=20):
+    """Statement / manifesto — single quote + § chrome."""
     slide = title_only_slide(prs)
-    _slide_bg(slide, WHITE)
-    corner_accent(slide)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, section_num, "INSIGHT", section_title="Statement")
     tb = slide.shapes.add_textbox(Inches(1.0), Inches(2.15), Inches(11.3), Inches(2.4))
     tf = tb.text_frame
     no_autofit(tf)
     tf.word_wrap = True
     tf.text = statement
     tf.paragraphs[0].alignment = PP_ALIGN.CENTER
-    _style(tf, BLUE_800, 36, bold=True, align=PP_ALIGN.CENTER)
+    _style(tf, INK, 36, bold=True, align=PP_ALIGN.CENTER)
     rule = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5.4), Inches(4.75),
-                                  Inches(2.5), Inches(0.06))
-    fill(rule, ACCENT)
+                                  Inches(2.5), Inches(0.04))
+    fill(rule, BRAND)
     if caption:
         ctb = slide.shapes.add_textbox(Inches(1.5), Inches(5.05), Inches(10.3), Inches(0.55))
         ctf = ctb.text_frame
         no_autofit(ctf)
         ctf.text = caption
         ctf.paragraphs[0].alignment = PP_ALIGN.CENTER
-        _style(ctf, GRAY_600, 15, bold=False, align=PP_ALIGN.CENTER)
+        _style(ctf, INK_3, 15, bold=False, align=PP_ALIGN.CENTER)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
     _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
     return slide
 
 
-def metrics_3up_slide(prs, title, metrics, message=None, logo_path=None):
-    """Three hero KPIs — classic agency results / projection slide.
+def metrics_3up_slide(prs, title, metrics, message=None, logo_path=None,
+                      section_num=9, sheet_num=9, total=20):
+    """Data / KPIs — up to 4 KPI cards (last featured on BRAND_DEEP).
 
-    metrics: [{"value": "38%", "label": "Reach uplift", "note": "vs. baseline"}, ...]
+    metrics: [{"value": "38%", "label": "Reach uplift", "note": "vs baseline", "badge": "↑ 18%"}, ...]
     """
     slide = title_only_slide(prs)
-    corner_accent(slide)
-    add_title(slide, title, align=PP_ALIGN.LEFT, size=26)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, section_num, "DATA", section_title=title, rhs_meta="KPIs")
     if message:
-        add_message_bar(slide, message, fill_color=PRIMARY_DARK)
-    n = min(len(metrics), 3)
+        mbar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(CHROME_PAD), Inches(1.15),
+                                      Inches(10.5), Inches(0.55))
+        fill(mbar, BRAND_TINT)
+        mbar.line.color.rgb = BRAND_PALE
+        mbar.line.width = Pt(1)
+        mtf = mbar.text_frame
+        no_autofit(mtf)
+        mtf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        mtf.margin_left = Inches(0.2)
+        mtf.text = message
+        _style(mtf, INK_2, 13, bold=False)
+    n = min(len(metrics), 4)
     if not n:
+        add_slide_footer(slide, sheet_num=sheet_num, total=total)
         return slide
-    gap = 0.45
-    left = 0.55
-    total_w = SLIDE_W - 1.1
+    gap = 0.35
+    left = CHROME_PAD
+    total_w = SLIDE_W - 2 * CHROME_PAD
     w = (total_w - gap * (n - 1)) / n
-    top = 2.35 if message else 1.65
-    for i, m in enumerate(metrics[:3]):
+    top = 2.05 if message else 1.55
+    h = 4.2
+    for i, m in enumerate(metrics[:4]):
         x = left + i * (w + gap)
-        panel = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(top),
-                                       Inches(w), Inches(4.35))
-        fill(panel, GRAY_50 if i % 2 == 0 else BLUE_50)
-        panel.line.color.rgb = GRAY_200
-        panel.line.width = Pt(1)
-        vtb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 0.55),
-                                       Inches(w - 0.4), Inches(1.2))
-        vtf = vtb.text_frame
-        no_autofit(vtf)
-        vtf.text = str(m.get("value", ""))
-        vtf.paragraphs[0].alignment = PP_ALIGN.CENTER
-        _style(vtf, BLUE_600 if i == 1 else BLUE_800, 44, bold=True, align=PP_ALIGN.CENTER)
-        ltb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 1.85),
-                                       Inches(w - 0.4), Inches(0.5))
-        ltf = ltb.text_frame
-        no_autofit(ltf)
-        ltf.text = m.get("label", "")
-        ltf.paragraphs[0].alignment = PP_ALIGN.CENTER
-        _style(ltf, GRAY_800, 14, bold=True, align=PP_ALIGN.CENTER)
-        note = m.get("note")
-        if note:
-            ntb = slide.shapes.add_textbox(Inches(x + 0.2), Inches(top + 2.45),
-                                           Inches(w - 0.4), Inches(0.45))
-            ntf = ntb.text_frame
-            no_autofit(ntf)
-            ntf.text = note
-            ntf.paragraphs[0].alignment = PP_ALIGN.CENTER
-            _style(ntf, GRAY_600, 11, bold=False, align=PP_ALIGN.CENTER)
+        featured = i == n - 1 and n >= 3
+        kpi_card(slide, x, top, w, h,
+                 m.get("label", "METRIC"),
+                 m.get("value", ""),
+                 unit=m.get("unit"),
+                 desc=m.get("note"),
+                 badge=m.get("badge"),
+                 featured=featured)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
     _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
     return slide
 
@@ -839,36 +1059,61 @@ def campaign_timeline_slide(prs, title, message, checkpoints, top_items=None, bo
 CLOSING_FOOTER = "Thank you"
 
 
-def closing_slide(prs, logo_path=None, tagline="Thank you"):
-    """Optional thank-you / closing slide (see compliance checklist)."""
+def contact_slide(prs, headline="Let's send the first signal.", subtitle=None,
+                  contacts=None, sheet_num=20, total=20, logo_path=None):
+    """Contact close — BRAND_DEEP + CTA + glass-style contact rows."""
     slide = title_only_slide(prs)
-    corner_accent(slide)
-    panel = slide.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(SLIDE_W), Inches(5.85)
-    )
-    fill(panel, BLUE_800)
-    if logo_path:
-        slide.shapes.add_picture(logo_path, Inches(0.55), Inches(0.45), height=Inches(0.55))
-    tb = slide.shapes.add_textbox(Inches(0.8), Inches(2.35), Inches(11.7), Inches(1.4))
+    _slide_bg(slide, BRAND_DEEP)
+    add_wordmark(slide, CHROME_PAD, 0.35, dark=True, compact=True)
+    tb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(2.2), Inches(6.5), Inches(1.8))
     tf = tb.text_frame
     no_autofit(tf)
-    tf.text = tagline
-    tf.paragraphs[0].alignment = PP_ALIGN.CENTER
-    _style(tf, WHITE, 32, bold=True)
-    band = slide.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0), Inches(5.95), Inches(SLIDE_W), Inches(1.55)
+    tf.word_wrap = True
+    tf.text = headline
+    _style(tf, WHITE, 36, bold=True, align=PP_ALIGN.LEFT)
+    if subtitle:
+        stb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.05), Inches(6.0), Inches(0.55))
+        stf = stb.text_frame
+        no_autofit(stf)
+        stf.text = subtitle
+        _style(stf, BRAND_GLOW, 15, bold=False, align=PP_ALIGN.LEFT)
+    cta = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(CHROME_PAD), Inches(4.85), Inches(2.4), Inches(0.48),
     )
-    fill(band, ACCENT)
-    ftb = slide.shapes.add_textbox(Inches(0.45), Inches(6.05), Inches(12.4), Inches(1.35))
-    ftf = ftb.text_frame
-    no_autofit(ftf)
-    ftf.word_wrap = True
-    ftf.text = CLOSING_FOOTER
-    for p in ftf.paragraphs:
-        p.alignment = PP_ALIGN.LEFT
-        p.space_after = Pt(2)
-        for r in p.runs:
-            r.font.name = FONT
-            r.font.size = Pt(8)
-            r.font.color.rgb = BLUE_800
+    fill(cta, BRAND_3)
+    ctf = cta.text_frame
+    no_autofit(ctf)
+    ctf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    ctf.text = "Get in touch →"
+    _style(ctf, WHITE, 14, bold=True, align=PP_ALIGN.CENTER)
+    contacts = contacts or [
+        ("Studio", "Shanghai · Remote"),
+        ("Email", "hello@metastellar.com"),
+        ("Phone", "+86 · · ·"),
+        ("Follow", "@metastellar"),
+    ]
+    rx = 7.8
+    ry = 1.65
+    for label, value in contacts[:4]:
+        row = slide.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE, Inches(rx), Inches(ry), Inches(4.8), Inches(0.72),
+        )
+        row.fill.solid()
+        row.fill.fore_color.rgb = BRAND
+        row.fill.transparency = 0.92
+        row.line.color.rgb = BRAND_GLOW
+        row.line.width = Pt(1)
+        ltb = slide.shapes.add_textbox(Inches(rx + 0.2), Inches(ry + 0.12), Inches(4.4), Inches(0.5))
+        ltf = ltb.text_frame
+        no_autofit(ltf)
+        ltf.text = f"{label.upper()}  ·  {value}"
+        _style(ltf, WHITE, 11, mono=True)
+        ry += 0.88
+    add_slide_footer(slide, sheet_num=sheet_num, total=total, dark=True)
+    _place_logo(slide, logo_path, rx, 0.35, height=0.42)
     return slide
+
+
+def closing_slide(prs, logo_path=None, tagline="Thank you"):
+    """Thank-you slide — delegates to contact_slide styling when possible."""
+    return contact_slide(prs, headline=tagline, subtitle="Q&A", sheet_num=20, total=20, logo_path=logo_path)

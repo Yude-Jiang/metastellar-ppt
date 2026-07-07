@@ -1,75 +1,83 @@
 ---
 name: metastellar-slides
 description: >
-  Create premium marketing-agency pitch decks and polished presentations with the
-  Metastellar blue design system. Optimized for agencies presenting strategies,
-  campaigns, and proposals to clients. Prefer agency layouts from slide_theme.py.
+  Create premium marketing-agency pitch decks with the MetaStellar Digital Enterprise
+  Deck System. Blue mono palette, Arial typography, KPI cards, § chrome, MetaStellar
+  logo mark. Optimized for SaaS/consulting/agency client pitches.
 ---
 
-# Metastellar Slides
+# Metastellar Slides — Digital Enterprise Deck System
 
 Build **16:9 PowerPoint (.pptx)** decks for **marketing agencies presenting to clients**.
-Default aesthetic: **premium, editorial, confident** — large type, generous whitespace,
-clear story arc (challenge → insight → strategy → plan → proof → ask).
+Style: **dashboard-driven enterprise** — Arial, data UI, blue mono, `BRAND_DEEP` dark pages.
 
-Read **`references/agency-pitch-playbook.md`** first for deck structure and tone.
+Read **`references/digital-enterprise-deck.md`** for the 20-page type system.
+Read **`references/agency-pitch-playbook.md`** for pitch arc and copy tone.
 
 ## Workflow
 
 1. Read `AGENTS.md` for the full build loop.
-2. Read `references/agency-pitch-playbook.md` for client-pitch positioning.
-3. Read `references/brand-spec.md` for palette (2–3 colors per slide max).
-4. Pick layout from `references/layout-index.md` (agency section prioritized).
-5. Prefer **`slide_theme.py`** agency builders — see below.
+2. Read `references/brand-spec.md` for tokens and forbidden patterns.
+3. Pick layout from `references/layout-index.md`.
+4. Build with **`slide_theme.py`** — prefer agency builders below.
+5. Every inner slide: `add_slide_header` + `add_slide_footer` (or use builders that include chrome).
 6. Render previews and fix overflow before finishing.
 
-## Agency-first builders (`slide_theme.py`)
+## Primary builders (`slide_theme.py`)
 
 | Moment | Builder |
 |--------|---------|
-| Pitch cover | `agency_cover_slide` |
+| Opener / cover | `agency_cover_slide` |
+| Agenda | `agenda_slide` |
 | Section divider | `agency_section_slide` |
-| North-star insight | `big_idea_slide` |
+| Statement / manifesto | `big_idea_slide` |
+| Data / KPIs | `metrics_3up_slide` + `kpi_card` |
 | Challenge vs approach | `challenge_solution_slide` |
 | Strategic pillars | `pillar_strategy_slide` |
-| KPI / results | `metrics_3up_slide` |
 | Campaign rollout | `campaign_timeline_slide` |
 | Hero + proof rows | `left_image_icon_rows_slide` |
-| Close | `closing_slide` |
+| Contact / close | `contact_slide`, `closing_slide` |
 
-Also available: `presentation_title_slide`, `agenda_slide`, `section_title_slide`,
-`left_image_tiered_list_slide`, `migration_timeline_circles_slide`, `add_cards_row`,
-`timeline_template_slide`, `add_message_bar`, `text_on(fill)`.
+**Chrome primitives:** `add_wordmark`, `draw_metastellar_mark`, `add_slide_header`,
+`add_slide_footer`, `kpi_card`, `text_on(fill)`.
+
+Also available: `presentation_title_slide`, `section_title_slide`, `left_image_tiered_list_slide`,
+`migration_timeline_circles_slide`, `add_cards_row`, `timeline_template_slide`, `add_message_bar`.
 
 ## Density
 
-| Mode | Best for | Agency behavior |
-|------|----------|-----------------|
-| **Speaker-led** | Live client pitch | Default for agency — 1 idea/slide, hero metrics, minimal bullets |
-| **Reading-first** | Proposal PDF / async | Denser pillars and timelines; still premium, not cramped |
+| Mode | Best for | Behavior |
+|------|----------|----------|
+| **Speaker-led** | Live pitch | 1 idea/slide, hero KPIs, § chrome, minimal bullets |
+| **Reading-first** | Proposal PDF | Denser pillars/timelines; still premium |
 
 ## Core rules
 
 - **16:9**, blank Title-Only layout.
-- **Palette:** blue-800 / blue-500 / indigo-500 + gray neutrals (`brand-spec.md`).
-- **Typography:** Segoe UI. Agency pitch titles 26–40pt; KPI values 44pt.
+- **Palette:** blue mono only (`brand-spec.md`). No indigo, no second hue.
+- **Typography:** Arial + Consolas labels + Microsoft YaHei for 中文. **No italic.**
+- **Dark bg:** `BRAND_DEEP` `#0F1E4A` only — never `#000`.
+- **Chrome:** every inner slide needs `§` section pill + `NN / total` footer.
+- **KPI cards:** tabular numbers; last card `featured` on data slides.
 - **Contrast:** `text_on(fill)` always.
-- **Images:** uploads, screenshots, real photography — no AI images unless allowed.
-- **Story:** follow playbook arc when structure not specified.
+- **Story:** cover → agenda → divider → insight → data → plan → contact.
 
 ## Self-check
 
-- No overflow / overlap
-- ≤3 colors per slide
-- Every slide passes the "client boardroom" test: would an agency partner show this as-is?
+- No serif / italic / second hue
+- Every slide has § id + sheet footer (except minimal covers if client-branded)
+- KPI values large (44pt), mono labels UPPERCASE
+- Dark slides use `BRAND_DEEP`, not `BRAND` or black
+- Preview PNGs: no overflow, ≤3 colors per slide
 
 ## References
 
 | File | Purpose |
 |------|---------|
-| `references/agency-pitch-playbook.md` | **Start here** — pitch arc, tone, typography |
-| `references/brand-spec.md` | Colors, contrast |
-| `references/layout-index.md` | Layout picker (agency section) |
+| `references/digital-enterprise-deck.md` | **20-page type system** |
+| `references/agency-pitch-playbook.md` | Pitch arc, copy tone |
+| `references/brand-spec.md` | Tokens, logo, typography |
+| `references/layout-index.md` | Layout picker |
 | `references/layout-library.md` | Layout anatomy |
 | `references/pptx-implementation.md` | Code patterns |
-| `references/special-slides.md` | Title, agenda, section slides |
+| `references/special-slides.md` | Title, agenda, section |

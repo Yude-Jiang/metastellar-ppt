@@ -45,16 +45,17 @@ If content does not fit, **add slides** — do not cram or shrink below 12pt.
 ### 2. Apply design system (agency pitch first)
 
 - **Playbook:** `skills/metastellar-slides/references/agency-pitch-playbook.md`
+- **Page types:** `skills/metastellar-slides/references/digital-enterprise-deck.md`
 - Rules: `skills/metastellar-slides/SKILL.md` and `references/`.
-- Helpers: **`slide_theme.py`** — prefer agency builders when pitching to clients:
+- Helpers: **`slide_theme.py`** — Digital Enterprise Deck System:
   `agency_cover_slide`, `agency_section_slide`, `big_idea_slide`,
-  `challenge_solution_slide`, `pillar_strategy_slide`, `metrics_3up_slide`,
-  `campaign_timeline_slide`, plus `left_image_icon_rows_slide`, `add_cards_row`,
-  `closing_slide`, **`text_on(fill_color)`**.
-- Default arc if unspecified: **cover → context/challenge → big idea → pillars →
-  timeline or metrics → close** (adapt to page count).
-- Pick layout via `references/layout-index.md` (agency section).
-- **2–3 colors per slide**. Segoe UI. Large headlines for speaker-led pitches.
+  `metrics_3up_slide`, `kpi_card`, `add_slide_header`, `add_slide_footer`,
+  `contact_slide`, `challenge_solution_slide`, `pillar_strategy_slide`,
+  `campaign_timeline_slide`, **`text_on(fill_color)`**.
+- Default arc: **opener → agenda → divider → insight → data → plan → contact**.
+- Pick layout via `references/layout-index.md`.
+- **Blue mono only** (no indigo). Arial + Consolas. `BRAND_DEEP` for dark slides.
+- Every inner slide: **§ section pill + sheet footer**.
 
 ### 3. Build
 
