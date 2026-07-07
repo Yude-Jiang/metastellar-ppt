@@ -205,8 +205,6 @@
         <li><a href="#layouts">版式参考</a></li>
         <li><a href="#edit">在线编辑</a></li>
         <li><a href="#output">输出文件</a></li>
-        <li><a href="#deploy">部署说明</a></li>
-        <li><a href="#env">环境变量</a></li>
         <li><a href="#faq">常见问题</a></li>
       </ul>
     </nav>
@@ -239,14 +237,6 @@
 
       <section id="quickstart">
         <h2>快速开始</h2>
-        <h3>本地运行（开发者）</h3>
-        <pre><code>export CURSOR_API_KEY=your_key
-pip install -r requirements.txt
-playwright install chromium
-uvicorn app.main:app --reload --port 8080</code></pre>
-        <p>浏览器访问 <a href="http://localhost:8080">http://localhost:8080</a></p>
-
-        <h3>网页端生成（普通用户）</h3>
         <ol class="steps">
           <li><b>撰写需求</b> — 在左侧文本框描述客户、战役目标、页数与要点；可上传 brief、数据文档。</li>
           <li><b>选择参数</b> — 设置页数、信息密度（演讲型/阅读型）、幻灯片语言。</li>
@@ -263,7 +253,7 @@ uvicorn app.main:app --reload --port 8080</code></pre>
           <ul>
             <li><strong>需求文本框</strong>：核心输入。写清客户是谁、要什么方案、关键数据与约束。</li>
             <li><strong>试试</strong>：点击示例 chip 可快速填充模板 brief。</li>
-            <li><strong>页数</strong>：1–6 页（可在服务端通过 <code>MAX_PAGES</code> 调整上限）。</li>
+            <li><strong>页数</strong>：1–6 页（具体上限以当前服务为准）。</li>
             <li><strong>信息密度</strong>：演讲型 / 阅读型（见下文）。</li>
             <li><strong>幻灯片语言</strong>：生成内容的语言，与界面语言独立。</li>
             <li><strong>参考文档</strong>：支持 PDF、Word、PPT、Excel、图片、Markdown、纯文本。</li>
@@ -304,7 +294,6 @@ uvicorn app.main:app --reload --port 8080</code></pre>
             </tr>
           </tbody>
         </table>
-        <div class="warn">对话模式需要服务保持单实例（<code>--max-instances 1</code>），否则重启后会话上下文会丢失。</div>
       </section>
 
       <section id="density">
@@ -410,49 +399,11 @@ uvicorn app.main:app --reload --port 8080</code></pre>
         <p>下载文件名格式示例：<code>品牌增长提案-2026-07-06.pptx</code></p>
       </section>
 
-      <section id="deploy">
-        <h2>部署说明</h2>
-        <p>推荐部署到 Google Cloud Run：</p>
-        <pre><code>gcloud run deploy metastellar-ppt \
-  --source . \
-  --project YOUR_PROJECT \
-  --region asia-east1 \
-  --allow-unauthenticated \
-  --memory 2Gi --cpu 2 --timeout 600 \
-  --concurrency 4 --max-instances 1 \
-  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
-  --set-env-vars CURSOR_MODEL=composer-2.5</code></pre>
-        <ul>
-          <li>对话模式建议 <code>--max-instances 1</code> 保持 Agent 会话。</li>
-          <li>Docker 镜像已包含 LibreOffice（预览渲染）与 Playwright（URL 截图）。</li>
-          <li>可选 <code>GCS_BUCKET</code> 持久化会话，应对实例重启。</li>
-        </ul>
-      </section>
-
-      <section id="env">
-        <h2>环境变量</h2>
-        <table>
-          <thead><tr><th>变量</th><th>默认</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>CURSOR_API_KEY</code></td><td>—</td><td>必填。Cursor API 密钥</td></tr>
-            <tr><td><code>CURSOR_MODEL</code></td><td>composer-2.5</td><td>Agent 使用的模型</td></tr>
-            <tr><td><code>MAX_PAGES</code></td><td>6</td><td>单次请求最大页数</td></tr>
-            <tr><td><code>RATE_LIMIT_PER_MINUTE</code></td><td>10</td><td>每 IP 每分钟请求上限</td></tr>
-            <tr><td><code>MAX_UPLOAD_FILES</code></td><td>5</td><td>单次最多上传文件数</td></tr>
-            <tr><td><code>MAX_UPLOAD_FILE_BYTES</code></td><td>10 MB</td><td>单文件大小上限</td></tr>
-            <tr><td><code>MAX_UPLOAD_TOTAL_BYTES</code></td><td>30 MB</td><td>总上传大小上限</td></tr>
-            <tr><td><code>RUN_TIMEOUT_SEC</code></td><td>540</td><td>单次 Agent 运行超时（秒）</td></tr>
-            <tr><td><code>SESSION_TTL_HOURS</code></td><td>24</td><td>会话过期时间</td></tr>
-            <tr><td><code>GCS_BUCKET</code></td><td>空</td><td>可选，会话持久化</td></tr>
-          </tbody>
-        </table>
-      </section>
-
       <section id="faq">
         <h2>常见问题</h2>
         <div class="card">
           <h3>生成失败或超时？</h3>
-          <p>尝试减少页数、简化 brief，或拆成多次生成后合并。检查服务端 <code>CURSOR_API_KEY</code> 是否有效。</p>
+          <p>尝试减少页数、简化 brief，或拆成多次生成后合并。若持续失败，请联系服务管理员。</p>
         </div>
         <div class="card">
           <h3>预览图文字溢出？</h3>
