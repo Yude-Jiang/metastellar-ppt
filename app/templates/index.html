@@ -296,7 +296,7 @@ const LS_CONDUCT = 'ms_deck_conduct_ack';
 const UI_LANG_OPTIONS = [
   { id: 'zh', label: '中文' },
   { id: 'en', label: 'EN' },
-  { id: 'ja', label: '日本語' },
+  { id: 'it', label: 'IT' },
 ];
 
 const DENSITY_OPTIONS = [
@@ -307,7 +307,7 @@ const DENSITY_OPTIONS = [
 const DECK_LANG_OPTIONS = [
   { id: 'zh', label: '中文' },
   { id: 'en', label: 'English' },
-  { id: 'ja', label: '日本語' },
+  { id: 'it', label: 'IT' },
 ];
 
 const I18N = {
@@ -441,70 +441,70 @@ const I18N = {
     ],
     conductAck: 'I understand and agree',
   },
-  ja: {
-    brandSub: 'SEO/GEO 提案 · デック生成',
-    panelBrief: '要件入力',
-    panelBriefSub: 'クライアント・キャンペーン目標；brief / 資料を添付',
-    reqPlaceholder: '例：小売クライアント向け Q3 ソーシャル成長提案 8 枚：インサイト、戦略柱、タイムライン、KPI…',
-    tryLabel: '例',
-    pagesLabel: '枚数',
-    densityLabel: '情報密度',
-    densitySpeaker: 'プレゼン型',
-    densityReading: '閲覧型',
-    uiLangLabel: '画面言語',
-    deckLangLabel: 'スライド言語',
-    refDocs: '参考資料',
-    optional: '任意',
-    dropLabel: 'ドラッグ＆ドロップまたはクリックで選択',
-    dropLabelSel: n => `${n} 件選択済み — クリックで変更`,
-    dropTypes: 'PDF · Word · PPT · Excel · 画像',
-    chatMode: '対話モード',
-    chatModeSub: 'まずアウトライン、確認後に生成（Beta）',
-    btnGenerate: 'PPT を生成',
-    btnDiscuss: 'ディスカッション開始',
-    btnStop: '停止',
-    panelWork: 'ワークベンチ',
-    pillIdle: '待機',
-    pillRun: '実行中',
-    pillDone: '完了',
-    pillErr: 'エラー',
-    pillStopped: '停止済み',
-    idleLead: 'Agent が 4 ステップでデッキを作成。進捗をリアルタイム表示し、完了後にプレビューと .pptx をダウンロードできます。',
-    step1t: '理解と収集', step1d: '要件と資料を読み取り、URL は実スクリーンショットを取得。',
-    step2t: 'デザインシステム適用', step2d: 'ブルーテーマ + レイアウト、2–3 色/枚、Segoe UI、密度に応じた情報量。',
-    step3t: '構築とレンダリング', step3d: 'slide_theme.py で build.py を作成し .pptx と PNG プレビューを出力。',
-    step4t: '自己チェック', step4d: 'はみ出し・コントラスト・配色を確認し、修正して再レンダリング。',
-    donePages: n => `<b>${n}</b> 枚生成済み`,
-    download: 'ダウンロード',
-    slideAlt: n => `スライド ${n}`,
-    editTitle: 'オンライン編集',
-    editPlaceholder: '例：タイトルを変更…；メッセージバーを濃紺に',
-    applyEdit: '変更を適用',
-    chatTitle: '対話を続ける',
-    chatPlaceholder: 'アウトラインを修正…「確認」または OK で生成開始',
-    sendChat: '送信',
-    statusBusy: '処理中…',
-    statusDone: '完了',
-    statusErr: 'エラー',
-    errRequest: s => `リクエスト失敗 (${s})`,
-    errParse: 'サーバーメッセージを解析できません',
-    errResult: '結果を解析できません',
-    errNetwork: 'ネットワークエラー',
-    logStopped: '—— 停止しました ——',
-    logEdit: v => `—— 編集 —— ${v}`,
-    logYou: v => `—— あなた —— ${v}`,
+  it: {
+    brandSub: 'Pitch SEO/GEO · Generazione deck',
+    panelBrief: 'Il brief',
+    panelBriefSub: 'Cliente, obiettivo campagna; allega brief / dati',
+    reqPlaceholder: 'Es.: proposta social Q3 da 8 slide per un cliente retail: insight, pilastri strategici, timeline, KPI…',
+    tryLabel: 'Prova',
+    pagesLabel: 'Slide',
+    densityLabel: 'Densità',
+    densitySpeaker: 'Presentazione',
+    densityReading: 'Lettura',
+    uiLangLabel: 'Lingua interfaccia',
+    deckLangLabel: 'Lingua slide',
+    refDocs: 'Documenti di riferimento',
+    optional: 'opzionale',
+    dropLabel: 'Trascina o clicca per selezionare i file',
+    dropLabelSel: n => `${n} file selezionati — clicca per modificare`,
+    dropTypes: 'PDF · Word · PPT · Excel · Immagini',
+    chatMode: 'Modalità chat',
+    chatModeSub: 'Prima la scaletta, poi genera dopo la conferma (Beta)',
+    btnGenerate: 'Genera PPT',
+    btnDiscuss: 'Avvia discussione',
+    btnStop: 'Interrompi',
+    panelWork: 'Area di lavoro',
+    pillIdle: 'Pronto',
+    pillRun: 'In esecuzione',
+    pillDone: 'Completato',
+    pillErr: 'Errore',
+    pillStopped: 'Interrotto',
+    idleLead: "L'agent lavora in quattro passaggi come un designer. Segui l'avanzamento qui; anteprime e .pptx scaricabile al termine.",
+    step1t: 'Comprendere e raccogliere', step1d: 'Legge brief e allegati; per gli URL cattura screenshot reali.',
+    step2t: 'Applicare il design system', step2d: 'Tema blu + layout, 2–3 colori per slide, densità controllata.',
+    step3t: 'Costruire e renderizzare', step3d: 'Scrive build.py con slide_theme.py, esporta .pptx e anteprime PNG.',
+    step4t: 'Controllo e correzione', step4d: 'Verifica overflow, contrasto e colori; correggi e ri-renderizza.',
+    donePages: n => `<b>${n}</b> slide generate`,
+    download: 'Scarica',
+    slideAlt: n => `Slide ${n}`,
+    editTitle: 'Modifica online',
+    editPlaceholder: 'Es.: Cambia il titolo…; barra messaggio blu scuro',
+    applyEdit: 'Applica modifiche',
+    chatTitle: 'Continua la chat',
+    chatPlaceholder: 'Affina la scaletta… scrivi OK o conferma per generare',
+    sendChat: 'Invia',
+    statusBusy: 'Elaborazione…',
+    statusDone: 'Completato',
+    statusErr: 'Errore',
+    errRequest: s => `Richiesta non riuscita (${s})`,
+    errParse: 'Impossibile analizzare il messaggio del server',
+    errResult: 'Impossibile analizzare il risultato',
+    errNetwork: 'Errore di rete',
+    logStopped: '—— Interrotto ——',
+    logEdit: v => `—— Modifica —— ${v}`,
+    logYou: v => `—— Tu —— ${v}`,
     chips: [
-      { label: '成長提案 8 枚', fill: '小売クライアント向け Q3 ソーシャル成長提案 8 枚：表紙、課題、戦略3本柱、タイムライン、KPI、クローズ。プレゼン型。' },
-      { label: '新商品上市 5 枚', fill: '新商品ローンチ提案 5 枚：ビッグアイデア、チャネル、ロールアウト、リーチ・CV KPI。クライアント向け。' },
-      { label: '年間 Retainer 提案', fill: '年間パートナー提案 6 枚：能力、課題、年間戦略、四半期マイルストーン、投資と成果物。' },
+      { label: 'Pitch crescita 8 slide', fill: 'Proposta social Q3 da 8 slide: copertina, sfida, 3 pilastri, timeline campagna, KPI, chiusura. Modalità presentazione.' },
+      { label: 'Lancio prodotto 5 slide', fill: 'Proposta lancio da 5 slide: big idea, mix canali, rollout, KPI reach e conversione. Per il cliente.' },
+      { label: 'Retainer annuale', fill: 'Proposta annuale da 6 slide: capacità agency, sfida cliente, strategia annua, milestone trimestrali, investimento e deliverable.' },
     ],
-    conductTitle: 'ご利用前に',
+    conductTitle: 'Prima di iniziare',
     conductBullets: [
-      '機密または未承認の社内資料はアップロードしないでください。',
-      '生成内容の事実・数値はご自身で確認してください。',
-      'アップロード資料はこのセッションのみに使用されます。',
+      'Non caricare materiali riservati o non autorizzati.',
+      'Verifica autonomamente fatti e dati nel contenuto generato.',
+      'I file caricati sono usati solo per questa sessione.',
     ],
-    conductAck: '理解しました',
+    conductAck: 'Ho letto e accetto',
   },
 };
 
@@ -522,8 +522,8 @@ let slideCount = 0;
 
 try { currentSession = localStorage.getItem(LS_SESSION) || null; } catch (_) {}
 try { chatActive = localStorage.getItem(LS_CHAT) === '1'; } catch (_) {}
-try { uiLang = localStorage.getItem(LS_UI_LANG) || 'zh'; } catch (_) {}
-try { deckLang = localStorage.getItem(LS_DECK_LANG) || uiLang; } catch (_) {}
+try { uiLang = localStorage.getItem(LS_UI_LANG) || 'zh'; if (uiLang === 'ja') uiLang = 'it'; } catch (_) {}
+try { deckLang = localStorage.getItem(LS_DECK_LANG) || uiLang; if (deckLang === 'ja') deckLang = 'it'; } catch (_) {}
 try { density = localStorage.getItem(LS_DENSITY) || 'speaker'; } catch (_) {}
 
 function t(key, ...args) {
@@ -534,7 +534,7 @@ function t(key, ...args) {
 }
 
 function applyI18n() {
-  document.documentElement.lang = uiLang === 'ja' ? 'ja' : uiLang === 'en' ? 'en' : 'zh';
+  document.documentElement.lang = uiLang === 'it' ? 'it' : uiLang === 'en' ? 'en' : 'zh';
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.dataset.i18n;
     const val = t(k);

@@ -22,7 +22,7 @@ Always:
 - Build **exactly the number of slides requested**.
 - Save your build script as **build.py** for re-runs and edits.
 - Finish only when `output/deck.pptx` and `output/preview-*.png` exist.
-- Slide language is in `language.txt` (zh / en / ja).
+- Slide language is in `language.txt` (zh / en / it).
 - Density mode is in `density.txt` (`speaker` or `reading`) — see below.
 
 ## Density

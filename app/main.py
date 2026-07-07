@@ -105,7 +105,7 @@ async def api_config():
             "max_pages": config.MAX_PAGES,
             "max_upload_files": config.MAX_UPLOAD_FILES,
             "max_upload_file_mb": config.MAX_UPLOAD_FILE_BYTES // (1024 * 1024),
-            "languages": ["zh", "en", "ja"],
+            "languages": ["zh", "en", "it"],
             "density_modes": ["speaker", "reading"],
         },
         headers={"Cache-Control": "no-store"},

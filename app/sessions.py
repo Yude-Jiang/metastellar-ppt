@@ -24,11 +24,13 @@ def touch_session(ws: Path) -> None:
     (ws / ".last_touch").write_text(str(time.time()), encoding="utf-8")
 
 
-SUPPORTED_LANGS = frozenset({"zh", "en", "ja"})
+SUPPORTED_LANGS = frozenset({"zh", "en", "it"})
 
 
 def normalize_lang(raw: str | None) -> str:
     lang = (raw or "zh").strip().lower()
+    if lang == "ja":
+        lang = "it"
     return lang if lang in SUPPORTED_LANGS else "zh"
 
 

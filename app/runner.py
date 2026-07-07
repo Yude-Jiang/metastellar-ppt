@@ -32,7 +32,7 @@ chat_sessions: dict[str, dict] = {}
 _LANG_LABELS = {
     "zh": "Simplified Chinese (简体中文)",
     "en": "English",
-    "ja": "Japanese (日本語)",
+    "it": "Italian (Italiano)",
 }
 
 _DENSITY_LABELS = {
