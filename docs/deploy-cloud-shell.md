@@ -96,10 +96,24 @@ bash scripts/deploy-cloud-run.sh
 
 | 问题 | 处理 |
 |------|------|
+| `Secret ... ST_DECK_ACCESS_TOKEN ... not found` | **旧版命令已废弃**。不要用 `ACCESS_TOKEN`，只保留 `CURSOR_API_KEY`（见上方正确命令） |
+| 仍看到 README 里 `st-deck-agent` | 执行 `git pull` 并 `git checkout main`，或切到最新 `main` |
 | `Permission denied` on secret | 执行第三节 IAM 绑定 |
-| 构建超时 | Cloud Build 默认 10min，大镜像可能需重试；或先本地 `docker build` 排查 |
+| 构建超时 | Cloud Build 默认 10min，大镜像可能需重试 |
 | Agent 报错 API key | 检查 Secret Manager 中 `CURSOR_API_KEY` 是否有效 |
 | 对话模式丢上下文 | 保持 `--max-instances 1` |
+
+### ⚠️ 勿用旧命令（会报错）
+
+以下来自旧版 ST Deck Agent，**当前仓库已不适用**：
+
+```bash
+# ❌ 错误：服务名、ACCESS_TOKEN 均已废弃
+gcloud run deploy st-deck-agent \
+  --set-secrets CURSOR_API_KEY=...,ACCESS_TOKEN=ST_DECK_ACCESS_TOKEN:latest
+```
+
+请改用第四节 **`metastellar-ppt`** 且仅 `CURSOR_API_KEY` 的命令或 `bash scripts/deploy-cloud-run.sh`。
 
 ## 可选环境变量
 

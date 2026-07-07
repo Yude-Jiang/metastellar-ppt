@@ -16,10 +16,16 @@ Open http://localhost:8080
 
 ## Deploy (Cloud Run)
 
+Cloud Run **service name:** `metastellar-ppt` (keep this name when redeploying).
+
+**Cloud Shell（推荐）：** 见 [docs/deploy-cloud-shell.md](docs/deploy-cloud-shell.md) 或运行 `bash scripts/deploy-cloud-run.sh`。
+
 ```bash
+cd metastellar-ppt
+export GCP_PROJECT=YOUR_PROJECT_ID
 gcloud run deploy metastellar-ppt \
   --source . \
-  --project YOUR_PROJECT \
+  --project $GCP_PROJECT \
   --region asia-east1 \
   --allow-unauthenticated \
   --memory 2Gi --cpu 2 --timeout 600 \
@@ -27,6 +33,8 @@ gcloud run deploy metastellar-ppt \
   --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
   --set-env-vars CURSOR_MODEL=composer-2.5
 ```
+
+> **Note:** `ACCESS_TOKEN` was removed — no shared secret required. Only `CURSOR_API_KEY` in Secret Manager is needed.
 
 ## Environment variables
 
