@@ -33,6 +33,7 @@ RUN playwright install chromium
 
 COPY app ./app
 COPY workspace_template ./workspace_template
+COPY docs ./docs
 
 EXPOSE 8080
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
