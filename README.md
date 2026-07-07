@@ -13,40 +13,6 @@ uvicorn app.main:app --reload --port 8080
 
 Open http://localhost:8080
 
-## Deploy (Cloud Run)
-
-Cloud Run **service name:** `st-deck-agent` (keep this name — do not rename when redeploying).
-
-```bash
-cd st-deck-agent
-gcloud run deploy st-deck-agent \
-  --source . \
-  --project YOUR_PROJECT \
-  --region asia-east1 \
-  --allow-unauthenticated \
-  --memory 2Gi --cpu 2 --timeout 600 \
-  --concurrency 4 --max-instances 1 \
-  --set-secrets CURSOR_API_KEY=CURSOR_API_KEY:latest \
-  --set-env-vars CURSOR_MODEL=composer-2.5
-```
-
-## Environment variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `CURSOR_API_KEY` | — | Required. Cursor API key (use Secret Manager in prod). |
-| `CURSOR_MODEL` | `composer-2.5` | Model for the agent. |
-| `RATE_LIMIT_PER_MINUTE` | `10` | Per-IP rate limit for API routes. |
-| `MAX_PAGES` | `6` | Maximum slides per request. |
-| `MAX_UPLOAD_FILES` | `5` | Max reference files per request. |
-| `MAX_UPLOAD_FILE_BYTES` | `10485760` (10 MB) | Per-file upload limit. |
-| `MAX_UPLOAD_TOTAL_BYTES` | `31457280` (30 MB) | Total upload limit per request. |
-| `SESSION_TTL_HOURS` | `24` | Auto-delete session workspaces after this age. |
-| `SESSION_CLEANUP_INTERVAL_SEC` | `3600` | How often to sweep expired sessions. |
-| `RUN_TIMEOUT_SEC` | `540` | Max seconds per agent run. |
-| `GCS_BUCKET` | *(empty)* | Optional. Persist session tarballs for restore after instance restart. |
-| `SESSIONS_DIR` | `/tmp/sessions` | Workspace root (tmpfs on Cloud Run). |
-
 ## Modes
 
 - **One-shot (default):** `POST /generate` → deck + previews in one unattended run.
