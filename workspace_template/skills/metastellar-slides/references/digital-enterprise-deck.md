@@ -1,5 +1,7 @@
 # Digital Enterprise Deck System — Page Types
 
+> **MetaStellar default:** use **`seo-geo-deck.md`** (24-page SEO/GEO deck). This file is the generic 20-page fallback.
+
 20-page pitch deck sequence. Each slide maps to `slide_theme.py` builders.
 
 | # | Page type | Key components | Builder |

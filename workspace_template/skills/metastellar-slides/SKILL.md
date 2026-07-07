@@ -1,83 +1,72 @@
 ---
 name: metastellar-slides
 description: >
-  Create premium marketing-agency pitch decks with the MetaStellar Digital Enterprise
-  Deck System. Blue mono palette, Arial typography, KPI cards, § chrome, MetaStellar
-  logo mark. Optimized for SaaS/consulting/agency client pitches.
+  Create SEO/GEO marketing agency pitch decks for MetaStellar 智元星启. Blue mono
+  palette, Arial typography, 24-page deck with AI Search / GEO specialty slides.
 ---
 
-# Metastellar Slides — Digital Enterprise Deck System
+# Metastellar Slides — SEO/GEO Agency Deck
 
-Build **16:9 PowerPoint (.pptx)** decks for **marketing agencies presenting to clients**.
-Style: **dashboard-driven enterprise** — Arial, data UI, blue mono, `BRAND_DEEP` dark pages.
+Build **16:9 PowerPoint (.pptx)** for **MetaStellar SEO · GEO · Campaign · Strategy** client pitches.
 
-Read **`references/digital-enterprise-deck.md`** for the 20-page type system.
-Read **`references/agency-pitch-playbook.md`** for pitch arc and copy tone.
+Read **`references/seo-geo-deck.md`** for the 24-page structure.
+Read **`references/agency-pitch-playbook.md`** for pitch arc and copy.
 
 ## Workflow
 
-1. Read `AGENTS.md` for the full build loop.
-2. Read `references/brand-spec.md` for tokens and forbidden patterns.
-3. Pick layout from `references/layout-index.md`.
-4. Build with **`slide_theme.py`** — prefer agency builders below.
-5. Every inner slide: `add_slide_header` + `add_slide_footer` (or use builders that include chrome).
-6. Render previews and fix overflow before finishing.
+1. Read `AGENTS.md` for the build loop.
+2. Read `references/brand-spec.md` for tokens.
+3. Pick layouts from `references/layout-index.md`.
+4. Build with **`slide_theme.py`** — use SEO/GEO builders below.
+5. Every inner slide: § chrome + `NN / 24` footer.
+6. Render previews; fix overflow before finishing.
 
-## Primary builders (`slide_theme.py`)
+## SEO/GEO builders (`slide_theme.py`)
 
-| Moment | Builder |
-|--------|---------|
-| Opener / cover | `agency_cover_slide` |
-| Agenda | `agenda_slide` |
-| Section divider | `agency_section_slide` |
-| Statement / manifesto | `big_idea_slide` |
-| Data / KPIs | `metrics_3up_slide` + `kpi_card` |
-| Challenge vs approach | `challenge_solution_slide` |
-| Strategic pillars | `pillar_strategy_slide` |
-| Campaign rollout | `campaign_timeline_slide` |
-| Hero + proof rows | `left_image_icon_rows_slide` |
-| Contact / close | `contact_slide`, `closing_slide` |
+| # | Slide | Builder |
+|---|-------|---------|
+| 01 | Opener | `agency_cover_slide` |
+| 06 | Agenda | `agenda_slide` |
+| 07 | Divider | `agency_section_slide` |
+| 08 | Manifesto | `big_idea_slide` |
+| 09 | Industry KPIs | `seo_geo_data_slide` |
+| 10 | AI Search Landscape | `ai_search_landscape_slide` |
+| 11 | GEO Explained | `geo_explained_slide` |
+| 12 | SEO vs GEO | `seo_vs_geo_slide` |
+| 13 | Methodology | `methodology_slide` |
+| 14 | Services 4-up | `services_4up_slide` |
+| 19 | Proposal tiers | `proposal_tiers_slide` |
+| 24 | Contact | `contact_slide` |
 
-**Chrome primitives:** `add_wordmark`, `draw_metastellar_mark`, `add_slide_header`,
-`add_slide_footer`, `kpi_card`, `text_on(fill)`.
+**Also:** `metrics_3up_slide`, `kpi_card`, `challenge_solution_slide`, `campaign_timeline_slide`,
+`left_image_tiered_list_slide`, `add_slide_header`, `add_slide_footer`, `add_wordmark`.
 
-Also available: `presentation_title_slide`, `section_title_slide`, `left_image_tiered_list_slide`,
-`migration_timeline_circles_slide`, `add_cards_row`, `timeline_template_slide`, `add_message_bar`.
+## Defaults (use unless user overrides)
 
-## Density
+```python
+from slide_theme import (
+    SEO_GEO_TAGLINE, SEO_GEO_MANIFESTO, SEO_GEO_CONTACT, DEFAULT_TOTAL
+)
+```
 
-| Mode | Best for | Behavior |
-|------|----------|----------|
-| **Speaker-led** | Live pitch | 1 idea/slide, hero KPIs, § chrome, minimal bullets |
-| **Reading-first** | Proposal PDF | Denser pillars/timelines; still premium |
+- Tagline: `The new science of visibility.`
+- Manifesto: `If you can't be found, you don't exist.`
+- Contact: `Let's make you findable.`
+- Total pages: **24**
 
 ## Core rules
 
-- **16:9**, blank Title-Only layout.
-- **Palette:** blue mono only (`brand-spec.md`). No indigo, no second hue.
-- **Typography:** Arial + Consolas labels + Microsoft YaHei for 中文. **No italic.**
-- **Dark bg:** `BRAND_DEEP` `#0F1E4A` only — never `#000`.
-- **Chrome:** every inner slide needs `§` section pill + `NN / total` footer.
-- **KPI cards:** tabular numbers; last card `featured` on data slides.
-- **Contrast:** `text_on(fill)` always.
-- **Story:** cover → agenda → divider → insight → data → plan → contact.
-
-## Self-check
-
-- No serif / italic / second hue
-- Every slide has § id + sheet footer (except minimal covers if client-branded)
-- KPI values large (44pt), mono labels UPPERCASE
-- Dark slides use `BRAND_DEEP`, not `BRAND` or black
-- Preview PNGs: no overflow, ≤3 colors per slide
+- Blue mono only — no indigo, no second hue, no italic
+- `BRAND_DEEP` `#0F1E4A` for dark surfaces
+- Arial + Consolas + Microsoft YaHei
+- GEO service card / middle proposal tier = **featured** (dark anchor)
+- Realistic search-industry metrics (CTR, citations, queries)
 
 ## References
 
 | File | Purpose |
 |------|---------|
-| `references/digital-enterprise-deck.md` | **20-page type system** |
-| `references/agency-pitch-playbook.md` | Pitch arc, copy tone |
-| `references/brand-spec.md` | Tokens, logo, typography |
-| `references/layout-index.md` | Layout picker |
-| `references/layout-library.md` | Layout anatomy |
-| `references/pptx-implementation.md` | Code patterns |
-| `references/special-slides.md` | Title, agenda, section |
+| `references/seo-geo-deck.md` | **24-page SEO/GEO system** |
+| `references/digital-enterprise-deck.md` | Generic page types (fallback) |
+| `references/agency-pitch-playbook.md` | Pitch arc, copy |
+| `references/brand-spec.md` | Tokens, logo |

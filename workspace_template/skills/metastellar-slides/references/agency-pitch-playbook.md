@@ -1,44 +1,49 @@
-# Agency Pitch Playbook — client-facing proposals
+# SEO/GEO Agency Pitch Playbook
 
-Default positioning: **a marketing agency presenting a premium solution to a client**.
-Tone: confident, minimal, editorial — not a dense internal report.
+Default positioning: **MetaStellar 智元星启 — SEO · GEO · Campaign · Strategy**.
 
-## Aesthetic principles
+Tone: data-driven, credible, premium — speak in metrics, citations, and visibility.
 
-| Principle | Do | Avoid |
-|-----------|-----|-------|
-| **Hierarchy** | One hero idea per slide; oversized titles (32–40pt) | Walls of bullets, 8pt footnotes |
-| **Whitespace** | Generous margins; speaker-led pacing | Cramming proof points onto one slide |
-| **Credibility** | Real metrics, timelines, named deliverables | Vague adjectives without numbers |
-| **Premium feel** | `BRAND_DEEP` covers, § chrome, KPI cards | Clip-art, indigo/rainbow palettes |
-| **Story arc** | Situation → insight → strategy → plan → proof → ask | Random slide order |
+## Tagline & manifesto
 
-## Recommended deck arc (20-page system — adapt to page count)
+- **Tagline:** *The new science of visibility.*
+- **Manifesto:** *If you can't be found, you don't exist.*
+- **Contact close:** *Let's make you findable.*
 
-| # | Slide role | Preferred builder |
-|---|------------|-------------------|
-| 1 | Opener — hero + metric panel | `agency_cover_slide` |
-| 2 | Agenda | `agenda_slide` |
-| 3 | Section divider | `agency_section_slide` |
-| 4 | Client context / challenge | `challenge_solution_slide` |
-| 5 | Insight / manifesto | `big_idea_slide` |
-| 6 | Strategic pillars (3–4) | `pillar_strategy_slide` |
-| 7 | Creative / channel approach | `left_image_icon_rows_slide` |
-| 8 | Campaign timeline | `campaign_timeline_slide` |
-| 9 | Expected results (KPIs) | `metrics_3up_slide` |
-| 10 | Case proof | `left_image_tiered_list_slide` |
-| 11 | Investment / next steps | `pillar_strategy_slide` + message |
-| 12 | Contact / Q&A | `contact_slide` |
+## Recommended deck arc (24 pages — adapt to count)
 
-For **short decks (3–5 slides)**: opener → big idea → metrics or pillars → contact.
+| # | Slide role | Builder |
+|---|------------|---------|
+| 1 | Opener — tagline + SEO/GEO metrics | `agency_cover_slide` |
+| 6 | Agenda (8 sections incl. Landscape/GEO) | `agenda_slide` |
+| 7 | Section divider | `agency_section_slide` |
+| 8 | Manifesto | `big_idea_slide` |
+| 9 | Industry data KPIs | `seo_geo_data_slide` |
+| 10 | AI Search Landscape | `ai_search_landscape_slide` |
+| 11 | GEO Explained | `geo_explained_slide` |
+| 12 | SEO vs GEO compare | `seo_vs_geo_slide` |
+| 13 | Visibility Loop methodology | `methodology_slide` |
+| 14 | 4 services (GEO featured) | `services_4up_slide` |
+| 15 | Case study (SEO+GEO metrics) | `left_image_tiered_list_slide` |
+| 18 | Timeline (20-week engagement) | `campaign_timeline_slide` |
+| 19 | Proposal tiers | `proposal_tiers_slide` |
+| 24 | Contact | `contact_slide` |
 
-## Typography scale (Digital Enterprise)
+**Short deck (5–8 slides):** opener → manifesto → data → services → proposal → contact.
+
+## Copy guidelines
+
+- Headlines: **visibility / findability / citation** language
+- Numbers: AI Overview CTR, ChatGPT queries, citation rate, organic lift
+- Case proof: rank movement (page 27 → #1), traffic multiplier, AI citation %
+- Bullets: fragments; max 5 per block in speaker mode
+
+## Typography
 
 | Element | Size | Font |
 |---------|------|------|
 | Cover headline | 40pt | Arial bold |
-| Section title | 34pt | Arial bold |
-| Big idea | 36pt | Arial bold |
+| Manifesto | 36pt | Arial bold |
 | KPI value | 44pt | Arial bold |
 | Mono label | 10–11pt | Consolas UPPERCASE |
 | Body | 13–14pt | Arial |

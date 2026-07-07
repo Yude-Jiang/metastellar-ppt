@@ -63,6 +63,18 @@ FONT_MONO     = "Consolas"
 SLIDE_W       = 13.333
 SLIDE_H       = 7.5
 CHROME_PAD    = 0.67   # ~96px at 1920 — slide chrome inset
+DEFAULT_TOTAL = 24     # SEO/GEO deck page count
+
+# MetaStellar SEO/GEO defaults
+SEO_GEO_TAGLINE = "The new science of visibility."
+SEO_GEO_MANIFESTO = "If you can't be found, you don't exist."
+SEO_GEO_CONTACT = "Let's make you findable."
+DEFAULT_SEO_METRICS = [
+    {"label": "Projects", "value": "32", "badge": "↑ 22% QoQ"},
+    {"label": "Brands", "value": "120", "desc": "since 2020"},
+    {"label": "Organic lift", "value": "4.2", "unit": "×", "desc": "12-mo avg"},
+    {"label": "AI citation", "value": "68", "unit": "%", "desc": "4 engines"},
+]
 
 # Dark fills: white text. Light fills: BRAND text.
 _DARK_FILLS = frozenset({BRAND_DEEP, BRAND, BRAND_2, INK, INK_2})
@@ -655,10 +667,11 @@ def box(slide, x, y, w, h, text, fill_color, text_color=None, size=BODY_SIZE, bo
     return sh
 
 
-def bullet_box(slide, x, y, w, h, bullets, shade=GRAY_1, size=BODY_SIZE, heading=None):
+def bullet_box(slide, x, y, w, h, bullets, shade=GRAY_1, size=BODY_SIZE, heading=None, text_color=None):
     sh = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y),
                                 Inches(w), Inches(h))
     fill(sh, shade)
+    tc = text_color or BLUE_800
     tf = sh.text_frame
     no_autofit(tf)
     tf.vertical_anchor = MSO_ANCHOR.TOP
@@ -684,12 +697,12 @@ def bullet_box(slide, x, y, w, h, bullets, shade=GRAY_1, size=BODY_SIZE, heading
         for r in p.runs:
             r.font.name = FONT
             r.font.size = Pt(size)
-            r.font.color.rgb = BLUE_800
+            r.font.color.rgb = tc
     return sh
 
 
 def label(slide, x, y, w, text, color=BLUE_800, size=11, bold=True,
-          align=PP_ALIGN.LEFT):
+          align=PP_ALIGN.LEFT, mono=False):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(0.3))
     tf = tb.text_frame
     no_autofit(tf)
@@ -698,7 +711,7 @@ def label(slide, x, y, w, text, color=BLUE_800, size=11, bold=True,
     tf.text = text
     tf.paragraphs[0].alignment = align
     for r in tf.paragraphs[0].runs:
-        r.font.name = FONT
+        r.font.name = FONT_MONO if mono else FONT
         r.font.size = Pt(size)
         r.font.bold = bold
         r.font.color.rgb = color
@@ -853,9 +866,14 @@ def footer(slide, text):
 
 # ---- Marketing agency / client pitch layouts (premium) ----
 
-def agency_cover_slide(prs, headline, client, subtitle=None, date=None, logo_path=None,
-                       metrics=None, sheet_num=1, total=20):
-    """Opener — left hero title + right BRAND_DEEP metric panel."""
+def agency_cover_slide(prs, headline=None, client=None, subtitle=None, date=None, logo_path=None,
+                       metrics=None, sheet_num=1, total=DEFAULT_TOTAL):
+    """Opener — left hero title + right BRAND_DEEP metric panel (SEO/GEO defaults)."""
+    headline = headline or SEO_GEO_TAGLINE
+    client = client if client is not None else ""
+    subtitle = subtitle or (
+        "能见度的新科学 —— 让品牌在人类和 AI 的每一次搜索中都能被找到、被引用、被信任。"
+    )
     slide = title_only_slide(prs)
     _slide_bg(slide, PAPER)
     add_wordmark(slide, CHROME_PAD, 0.35, compact=True)
@@ -865,28 +883,26 @@ def agency_cover_slide(prs, headline, client, subtitle=None, date=None, logo_pat
     tf.word_wrap = True
     tf.text = headline
     _style(tf, INK, 40, bold=True, align=PP_ALIGN.LEFT)
-    ctb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.15), Inches(7.0), Inches(0.55))
-    ctf = ctb.text_frame
-    no_autofit(ctf)
-    ctf.text = client
-    _style(ctf, BRAND, 20, bold=True, align=PP_ALIGN.LEFT)
+    if client:
+        ctb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.15), Inches(7.0), Inches(0.55))
+        ctf = ctb.text_frame
+        no_autofit(ctf)
+        ctf.text = client
+        _style(ctf, BRAND, 20, bold=True, align=PP_ALIGN.LEFT)
     if subtitle:
-        stb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(4.75), Inches(7.0), Inches(0.55))
+        y_sub = 4.75 if client else 4.15
+        stb = slide.shapes.add_textbox(Inches(CHROME_PAD), Inches(y_sub), Inches(7.0), Inches(0.9))
         stf = stb.text_frame
         no_autofit(stf)
+        stf.word_wrap = True
         stf.text = subtitle
-        _style(stf, INK_3, 15, bold=False, align=PP_ALIGN.LEFT)
+        _style(stf, INK_3, 13, bold=False, align=PP_ALIGN.LEFT)
     panel_x = 8.35
     panel = slide.shapes.add_shape(
         MSO_SHAPE.RECTANGLE, Inches(panel_x), Inches(0), Inches(SLIDE_W - panel_x), Inches(SLIDE_H),
     )
     fill(panel, BRAND_DEEP)
-    metrics = metrics or [
-        {"label": "Projects", "value": "24"},
-        {"label": "Brands", "value": "86"},
-        {"label": "Brand lift", "value": "3.4", "unit": "×"},
-        {"label": "NPS", "value": "72"},
-    ]
+    metrics = metrics or DEFAULT_SEO_METRICS
     my = 0.85
     mh = 1.35
     for m in metrics[:4]:
@@ -938,8 +954,10 @@ def agency_section_slide(prs, section_num, title, subtitle=None, logo_path=None,
     return slide
 
 
-def big_idea_slide(prs, statement, caption=None, logo_path=None, section_num=8, sheet_num=8, total=20):
+def big_idea_slide(prs, statement=None, caption=None, logo_path=None, section_num=8, sheet_num=8, total=DEFAULT_TOTAL):
     """Statement / manifesto — single quote + § chrome."""
+    statement = statement or SEO_GEO_MANIFESTO
+    caption = caption or "如果无法被找到，就等于不存在 —— 能见度，就是新的存在权。"
     slide = title_only_slide(prs)
     _slide_bg(slide, PAPER)
     add_slide_header(slide, section_num, "INSIGHT", section_title="Statement")
@@ -1059,9 +1077,10 @@ def campaign_timeline_slide(prs, title, message, checkpoints, top_items=None, bo
 CLOSING_FOOTER = "Thank you"
 
 
-def contact_slide(prs, headline="Let's send the first signal.", subtitle=None,
-                  contacts=None, sheet_num=20, total=20, logo_path=None):
+def contact_slide(prs, headline=None, subtitle=None,
+                  contacts=None, sheet_num=24, total=DEFAULT_TOTAL, logo_path=None):
     """Contact close — BRAND_DEEP + CTA + glass-style contact rows."""
+    headline = headline or SEO_GEO_CONTACT
     slide = title_only_slide(prs)
     _slide_bg(slide, BRAND_DEEP)
     add_wordmark(slide, CHROME_PAD, 0.35, dark=True, compact=True)
@@ -1114,6 +1133,253 @@ def contact_slide(prs, headline="Let's send the first signal.", subtitle=None,
     return slide
 
 
-def closing_slide(prs, logo_path=None, tagline="Thank you"):
-    """Thank-you slide — delegates to contact_slide styling when possible."""
-    return contact_slide(prs, headline=tagline, subtitle="Q&A", sheet_num=20, total=20, logo_path=logo_path)
+def closing_slide(prs, logo_path=None, tagline=None):
+    """Thank-you slide — SEO/GEO contact close."""
+    return contact_slide(
+        prs, headline=tagline or SEO_GEO_CONTACT, subtitle="Q&A",
+        sheet_num=DEFAULT_TOTAL, total=DEFAULT_TOTAL, logo_path=logo_path,
+    )
+
+
+# ---- MetaStellar SEO/GEO specialty slides (24-page deck) ----
+
+def _engine_card(slide, x, y, w, h, name, owner, stat, desc, tag=None, featured=False):
+    bg = BRAND_DEEP if featured else PAPER_2
+    tc = WHITE if featured else INK
+    sub = BRAND_GLOW if featured else INK_3
+    card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
+    fill(card, bg)
+    card.line.color.rgb = BRAND_DEEP if featured else LINE
+    card.line.width = Pt(1)
+    if tag:
+        label(slide, x + 0.15, y + 0.15, w - 0.3, tag.upper(), color=sub, size=8, bold=True, align=PP_ALIGN.LEFT)
+    label(slide, x + 0.15, y + 0.42, w - 0.3, name, color=tc, size=14, bold=True)
+    label(slide, x + 0.15, y + 0.72, w - 0.3, owner, color=sub, size=10, bold=False)
+    vtb = slide.shapes.add_textbox(Inches(x + 0.15), Inches(y + 1.05), Inches(w - 0.3), Inches(0.7))
+    vtf = vtb.text_frame
+    no_autofit(vtf)
+    vtf.text = stat
+    _style(vtf, tc, 28, bold=True)
+    if desc:
+        label(slide, x + 0.15, y + h - 0.55, w - 0.3, desc, color=sub, size=9, bold=False)
+
+
+def ai_search_landscape_slide(prs, title="Four engines, one new frontier.",
+                              engines=None, logo_path=None, sheet_num=10, total=DEFAULT_TOTAL):
+    """Slide 10 — AI Search Landscape: 4 engine comparison cards."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 10, "LANDSCAPE", section_title=title, rhs_meta="AI Search")
+    engines = engines or [
+        {"name": "ChatGPT", "owner": "OpenAI", "stat": "3.7B", "desc": "queries / week", "tag": "featured", "featured": True},
+        {"name": "Perplexity", "owner": "Perplexity AI", "stat": "100M+", "desc": "monthly users"},
+        {"name": "Google AIO", "owner": "Google", "stat": "↓34.5%", "desc": "organic CTR impact", "tag": "SERP"},
+        {"name": "Gemini", "owner": "Google / MS", "stat": "58%", "desc": "zero-click searches", "tag": "Copilot"},
+    ]
+    gap, left, top, h = 0.28, CHROME_PAD, 1.55, 4.85
+    n = min(len(engines), 4)
+    w = (SLIDE_W - 2 * CHROME_PAD - gap * (n - 1)) / n
+    for i, e in enumerate(engines[:4]):
+        _engine_card(slide, left + i * (w + gap), top, w, h,
+                     e["name"], e.get("owner", ""), e.get("stat", ""),
+                     e.get("desc", ""), tag=e.get("tag"), featured=e.get("featured", False))
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def geo_explained_slide(prs, title="When AI answers, who gets quoted?",
+                        seo_steps=None, geo_steps=None, shift_note=None,
+                        logo_path=None, sheet_num=11, total=DEFAULT_TOTAL):
+    """Slide 11 — GEO Explained: Traditional SEO vs Generative Search dual flow."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 11, "GEO", section_title=title)
+    seo_steps = seo_steps or ["Crawl & index", "Rank keywords", "Earn backlinks", "Win SERP clicks"]
+    geo_steps = geo_steps or ["Train on sources", "Answer synthesis", "Cite brands", "Win AI citations"]
+    col_w, gap, top, body_h = 5.85, 0.45, 1.55, 3.85
+    x0, x1 = CHROME_PAD, CHROME_PAD + col_w + gap
+    box(slide, x0, top, col_w, 0.45, "Traditional SEO", PAPER_3, INK_2, size=12, bold=True)
+    bullet_box(slide, x0, top + 0.52, col_w, body_h, seo_steps, shade=PAPER_2, size=13)
+    box(slide, x1, top, col_w, 0.45, "Generative Search (GEO)", BRAND_DEEP, WHITE, size=12, bold=True)
+    bullet_box(slide, x1, top + 0.52, col_w, body_h, geo_steps, shade=BRAND_TINT, size=13, text_color=BRAND)
+    note = shift_note or "The Shift: 过去比拼排名，现在比拼被引用。"
+    nbar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(CHROME_PAD), Inches(5.65),
+                                  Inches(SLIDE_W - 2 * CHROME_PAD), Inches(0.55))
+    fill(nbar, BRAND_TINT)
+    nbar.line.color.rgb = BRAND_PALE
+    nbar.line.width = Pt(1)
+    ntf = nbar.text_frame
+    no_autofit(ntf)
+    ntf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    ntf.margin_left = Inches(0.2)
+    ntf.text = note
+    _style(ntf, BRAND, 12, bold=True)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def seo_vs_geo_slide(prs, title="Same goal. Different rulebook.",
+                     rows=None, logo_path=None, sheet_num=12, total=DEFAULT_TOTAL):
+    """Slide 12 — SEO vs GEO comparison table (6 dimensions)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 12, "COMPARE", section_title=title)
+    rows = rows or [
+        ("优化对象", "Keywords & pages", "Answers & citations"),
+        ("核心指标", "Rank · CTR · Traffic", "Citation rate · Share of answer"),
+        ("内容形态", "Landing pages · blogs", "Structured · quotable blocks"),
+        ("技术信号", "Schema · Core Web Vitals", "Entity graph · source authority"),
+        ("优化周期", "3–6 months", "4–8 weeks to first citations"),
+        ("转化路径", "Click → site → convert", "Cite → trust → discover"),
+    ]
+    top, row_h, col_w = 1.55, 0.62, 4.2
+    x_dim, x_seo, x_geo = CHROME_PAD, CHROME_PAD + 2.5, CHROME_PAD + 2.5 + col_w + 0.25
+    box(slide, x_dim, top, 2.3, 0.4, "维度", PAPER_3, INK_2, size=11, bold=True)
+    box(slide, x_seo, top, col_w, 0.4, "SEO", PAPER_3, INK_2, size=11, bold=True)
+    box(slide, x_geo, top, col_w, 0.4, "GEO", BRAND, WHITE, size=11, bold=True)
+    for i, (dim, seo, geo) in enumerate(rows[:6]):
+        y = top + 0.48 + i * (row_h + 0.06)
+        box(slide, x_dim, y, 2.3, row_h, dim, PAPER_2, INK_2, size=10, bold=True, align=PP_ALIGN.LEFT)
+        box(slide, x_seo, y, col_w, row_h, seo, PAPER_2, INK_3, size=10, bold=False, align=PP_ALIGN.LEFT)
+        box(slide, x_geo, y, col_w, row_h, geo, BRAND_TINT, BRAND, size=10, bold=False, align=PP_ALIGN.LEFT)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def methodology_slide(prs, title="Five phases, one visibility loop.",
+                      phases=None, logo_path=None, sheet_num=13, total=DEFAULT_TOTAL):
+    """Slide 13 — Visibility Loop: Audit → Strategy → Build → Amplify → Measure."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 13, "METHOD", section_title=title)
+    phases = phases or [
+        {"name": "Audit", "desc": "Technical + AI citation baseline", "items": ["SEO audit", "GEO snapshot", "Competitive map"]},
+        {"name": "Strategy", "desc": "Keyword + answer architecture", "items": ["Topic clusters", "Citation targets", "Content briefs"]},
+        {"name": "Build", "desc": "Content + structured data", "items": ["On-page SEO", "GEO content", "Schema deploy"]},
+        {"name": "Amplify", "desc": "Campaign + distribution", "items": ["Paid media", "PR + links", "Social proof"]},
+        {"name": "Measure", "desc": "Rank + citation dashboard", "items": ["Weekly KPIs", "AI monitoring", "Iteration"]},
+    ]
+    n = min(len(phases), 5)
+    gap, left, top, w, h = 0.22, CHROME_PAD, 1.65, (SLIDE_W - 2 * CHROME_PAD - 0.22 * 4) / 5, 4.6
+    track = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(top - 0.18),
+                                   Inches(SLIDE_W - 2 * CHROME_PAD), Inches(0.04))
+    fill(track, BRAND_PALE)
+    for i, ph in enumerate(phases[:5]):
+        x = left + i * (w + gap)
+        featured = i == 2
+        bg = BRAND_DEEP if featured else PAPER_2
+        tc = WHITE if featured else INK
+        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(top), Inches(w), Inches(h))
+        fill(card, bg)
+        card.line.color.rgb = BRAND_DEEP if featured else LINE
+        card.line.width = Pt(1)
+        label(slide, x + 0.12, top + 0.15, w - 0.24, f"0{i + 1}", color=BRAND_GLOW if featured else BRAND, size=9, mono=True)
+        label(slide, x + 0.12, top + 0.38, w - 0.24, ph.get("name", ""), color=tc, size=13, bold=True)
+        label(slide, x + 0.12, top + 0.72, w - 0.24, ph.get("desc", ""), color=BRAND_GLOW if featured else INK_3, size=9, bold=False)
+        items = ph.get("items", [])
+        bullet_box(slide, x + 0.08, top + 1.15, w - 0.16, h - 1.3, items[:3],
+                   shade=bg, size=9, text_color=WHITE if featured else INK_3)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def services_4up_slide(prs, title="SEO · GEO · Campaign · Strategy",
+                       services=None, logo_path=None, sheet_num=14, total=DEFAULT_TOTAL):
+    """Slide 14 — 4 core services (GEO featured)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 14, "SERVICES", section_title=title)
+    services = services or [
+        {"num": "01", "title": "SEO", "cn": "搜索引擎优化",
+         "desc": "Traditional search visibility",
+         "subs": ["Technical Audit", "Keyword Strategy", "Backlink Building", "SERP Features"]},
+        {"num": "02", "title": "GEO", "cn": "生成式引擎优化", "featured": True,
+         "desc": "Generative engine citations",
+         "subs": ["AI Citation Audit", "Answer Content", "Structured Data", "LLM Monitoring"]},
+        {"num": "03", "title": "Campaign", "cn": "整合营销",
+         "desc": "Integrated activation",
+         "subs": ["Big Idea", "Paid Media", "Social & KOL", "Performance"]},
+        {"num": "04", "title": "Strategy", "cn": "品牌战略",
+         "desc": "Growth & positioning",
+         "subs": ["Market Research", "Positioning", "GTM Strategy", "Growth Roadmap"]},
+    ]
+    gap, left, top, w, h = 0.28, CHROME_PAD, 1.55, (SLIDE_W - 2 * CHROME_PAD - 0.28 * 3) / 4, 5.0
+    for i, svc in enumerate(services[:4]):
+        x = left + i * (w + gap)
+        featured = svc.get("featured", False)
+        bg = BRAND_DEEP if featured else PAPER_2
+        tc = WHITE if featured else INK
+        sub_c = BRAND_GLOW if featured else INK_3
+        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(top), Inches(w), Inches(h))
+        fill(card, bg)
+        card.line.color.rgb = BRAND_DEEP if featured else LINE
+        card.line.width = Pt(1)
+        label(slide, x + 0.15, top + 0.15, w - 0.3, f"{svc.get('num', '')} · {svc.get('title', '')}", color=sub_c, size=9, mono=True)
+        cn = svc.get("cn", "")
+        label(slide, x + 0.15, top + 0.42, w - 0.3, cn, color=sub_c, size=10, bold=False)
+        label(slide, x + 0.15, top + 0.72, w - 0.3, svc.get("desc", ""), color=tc, size=11, bold=True)
+        bullet_box(slide, x + 0.12, top + 1.15, w - 0.24, h - 1.35, svc.get("subs", [])[:4],
+                   shade=bg, size=9, text_color=WHITE if featured else INK_3)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def proposal_tiers_slide(prs, title="Investment options",
+                         tiers=None, logo_path=None, sheet_num=19, total=DEFAULT_TOTAL):
+    """Slide 19 — 3 pricing tiers (middle featured)."""
+    slide = title_only_slide(prs)
+    _slide_bg(slide, PAPER)
+    add_slide_header(slide, 19, "PROPOSAL", section_title=title)
+    tiers = tiers or [
+        {"name": "SEO Audit", "price": "$28K+", "badge": "ONE-TIME",
+         "items": ["Technical audit", "Keyword analysis", "Content recs", "GEO snapshot"]},
+        {"name": "Full Campaign", "price": "$180K+", "badge": "FEATURED", "featured": True,
+         "items": ["Brand strategy", "SEO rebuild", "GEO deploy", "20-week activation", "90-day support"]},
+        {"name": "GEO Retainer", "price": "$32K/mo", "badge": "ANNUAL",
+         "items": ["Ongoing SEO/GEO", "AI citation monitoring", "Live dashboard", "24h response"]},
+    ]
+    gap, left, top, w, h = 0.35, CHROME_PAD, 1.55, (SLIDE_W - 2 * CHROME_PAD - 0.7) / 3, 5.0
+    for i, tier in enumerate(tiers[:3]):
+        x = left + i * (w + gap)
+        featured = tier.get("featured", False)
+        bg = BRAND_DEEP if featured else PAPER_2
+        tc = WHITE if featured else INK
+        sub = BRAND_GLOW if featured else INK_3
+        card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(top), Inches(w), Inches(h))
+        fill(card, bg)
+        card.line.color.rgb = BRAND_DEEP if featured else LINE
+        card.line.width = Pt(1)
+        if tier.get("badge"):
+            label(slide, x + 0.15, top + 0.15, w - 0.3, tier["badge"], color=sub, size=8, mono=True)
+        label(slide, x + 0.15, top + 0.42, w - 0.3, tier.get("name", ""), color=tc, size=14, bold=True)
+        vtb = slide.shapes.add_textbox(Inches(x + 0.15), Inches(top + 0.85), Inches(w - 0.3), Inches(0.65))
+        vtf = vtb.text_frame
+        no_autofit(vtf)
+        vtf.text = tier.get("price", "")
+        _style(vtf, tc, 32, bold=True)
+        bullet_box(slide, x + 0.12, top + 1.65, w - 0.24, h - 1.85, tier.get("items", [])[:5],
+                   shade=bg, size=10, text_color=WHITE if featured else INK_3)
+    add_slide_footer(slide, sheet_num=sheet_num, total=total)
+    _place_logo(slide, logo_path, 0.45, 6.55, height=0.38)
+    return slide
+
+
+def seo_geo_data_slide(prs, metrics=None, message=None, logo_path=None,
+                       sheet_num=9, total=DEFAULT_TOTAL):
+    """Slide 09 — SEO/GEO industry KPIs with search-specific defaults."""
+    default_metrics = [
+        {"value": "↓34.5%", "label": "AI Overview CTR", "note": "organic impact", "badge": "Google"},
+        {"value": "3.7B", "label": "ChatGPT queries", "note": "weekly volume"},
+        {"value": "58%", "label": "Zero-click", "note": "search sessions"},
+        {"value": "4.0×", "label": "Precision lift", "note": "GEO vs baseline", "badge": "↑"},
+    ]
+    return metrics_3up_slide(
+        prs, "Search landscape by the numbers", metrics or default_metrics,
+        message=message or "AI answers are reshaping how brands earn visibility.",
+        logo_path=logo_path, section_num=9, sheet_num=sheet_num, total=total,
+    )

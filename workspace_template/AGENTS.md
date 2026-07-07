@@ -45,17 +45,15 @@ If content does not fit, **add slides** — do not cram or shrink below 12pt.
 ### 2. Apply design system (agency pitch first)
 
 - **Playbook:** `skills/metastellar-slides/references/agency-pitch-playbook.md`
-- **Page types:** `skills/metastellar-slides/references/digital-enterprise-deck.md`
+- **24-page SEO/GEO deck:** `skills/metastellar-slides/references/seo-geo-deck.md`
 - Rules: `skills/metastellar-slides/SKILL.md` and `references/`.
-- Helpers: **`slide_theme.py`** — Digital Enterprise Deck System:
-  `agency_cover_slide`, `agency_section_slide`, `big_idea_slide`,
-  `metrics_3up_slide`, `kpi_card`, `add_slide_header`, `add_slide_footer`,
-  `contact_slide`, `challenge_solution_slide`, `pillar_strategy_slide`,
-  `campaign_timeline_slide`, **`text_on(fill_color)`**.
-- Default arc: **opener → agenda → divider → insight → data → plan → contact**.
-- Pick layout via `references/layout-index.md`.
-- **Blue mono only** (no indigo). Arial + Consolas. `BRAND_DEEP` for dark slides.
-- Every inner slide: **§ section pill + sheet footer**.
+- Helpers: **`slide_theme.py`** — MetaStellar SEO/GEO builders:
+  `agency_cover_slide`, `seo_geo_data_slide`, `ai_search_landscape_slide`,
+  `geo_explained_slide`, `seo_vs_geo_slide`, `methodology_slide`,
+  `services_4up_slide`, `proposal_tiers_slide`, `contact_slide`,
+  plus `big_idea_slide`, `agenda_slide`, `campaign_timeline_slide`.
+- Default arc: **opener → agenda → data → landscape → GEO → services → proposal → contact** (24 pp).
+- Tagline: *The new science of visibility.* Manifesto: *If you can't be found, you don't exist.*
 
 ### 3. Build
 

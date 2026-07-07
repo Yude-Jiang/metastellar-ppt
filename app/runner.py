@@ -60,14 +60,15 @@ def _density_instruction(density: str) -> str:
     return _DENSITY_LABELS.get(density, _DENSITY_LABELS["speaker"])
 
 
-_COMMON = """Build EXACTLY {pages} slide(s). This is a **marketing agency pitch to a client** \
-unless the user says otherwise — Digital Enterprise Deck System: blue mono palette, \
-Arial typography, § chrome on every inner slide, KPI cards for data. \
-Follow skills/metastellar-slides/SKILL.md, digital-enterprise-deck.md, agency-pitch-playbook.md. \
-Prefer slide_theme.py builders (agency_cover_slide, agenda_slide, agency_section_slide, \
-big_idea_slide, metrics_3up_slide, kpi_card, contact_slide, pillar_strategy_slide, \
-challenge_solution_slide, campaign_timeline_slide). Use BRAND_DEEP for dark slides — \
-no indigo, no second hue, no italic. Never use AI images unless allowed. {uploads}{language}{density} \
+_COMMON = """Build EXACTLY {pages} slide(s). Default: **MetaStellar SEO/GEO agency pitch** \
+(SEO · GEO · Campaign · Strategy). Tagline: "The new science of visibility." \
+Blue mono palette, Arial, § chrome, KPI cards, 24-page deck system when page count allows. \
+Follow skills/metastellar-slides/SKILL.md, seo-geo-deck.md, agency-pitch-playbook.md. \
+Prefer slide_theme.py: agency_cover_slide, seo_geo_data_slide, ai_search_landscape_slide, \
+geo_explained_slide, seo_vs_geo_slide, methodology_slide, services_4up_slide, \
+proposal_tiers_slide, contact_slide, big_idea_slide, agenda_slide. \
+Use BRAND_DEEP for dark slides; GEO service + middle proposal tier = featured. \
+No indigo, no second hue, no italic. Never use AI images unless allowed. {uploads}{language}{density} \
 When you build: save build.py, write output/deck_meta.json with \
 {{"subject":"<deck title>","filename":"<Subject-Line-YYYY-MM-DD>.pptx"}}, run \
 `python tools/preview.py output/deck.pptx output`, OPEN every preview PNG, fix \
