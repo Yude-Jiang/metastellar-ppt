@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Metastellar PPT — 用户手册</title>
+<title>MetaStellar · 智元星启 — 用户手册</title>
 <style>
   :root {
     --blue-500:#3B82F6; --blue-600:#2563EB; --indigo-500:#6366F1; --indigo-600:#4F46E5;
@@ -36,6 +36,17 @@
     border-bottom: 3px solid var(--blue-100);
   }
   .hero-inner { max-width: 920px; margin: 0 auto; }
+  .hero-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .hero-brand .ms-mark {
+    width: 52px; height: 52px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.95); border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(15,30,74,.2); color: var(--blue-800);
+  }
+  .hero-brand .ms-mark svg { width: 36px; height: 36px; display: block; }
+  .hero-brand .names { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; }
+  .hero-brand .names b { font-size: 1.35rem; font-weight: 700; letter-spacing: .02em; color: var(--white); }
+  .hero-brand .names .cn { font-size: .85rem; letter-spacing: .24em; color: rgba(255,255,255,.9); font-weight: 500; }
   .hero .badge {
     display: inline-block;
     background: rgba(255,255,255,.15);
@@ -154,9 +165,24 @@
 
 <header class="hero">
   <div class="hero-inner">
+    <div class="hero-brand">
+      <div class="ms-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="32" cy="32" rx="28" ry="10" transform="rotate(-28 32 32)"/>
+          <ellipse cx="32" cy="32" rx="28" ry="10" transform="rotate(28 32 32)"/>
+          <line x1="20" y1="42" x2="30" y2="19"/>
+          <line x1="34" y1="19" x2="44" y2="42"/>
+          <line x1="23" y1="38" x2="41" y2="38"/>
+        </svg>
+      </div>
+      <div class="names">
+        <b>MetaStellar</b>
+        <span class="cn">智元星启</span>
+      </div>
+    </div>
     <span class="badge">User Manual · v1.0</span>
-    <h1>Metastellar PPT 用户手册</h1>
-    <p>面向营销机构的 AI 演示文稿生成工具。输入客户 brief，一键生成高档提案级 PowerPoint，支持预览、下载与在线修改。</p>
+    <h1>MetaStellar PPT 用户手册</h1>
+    <p>面向 SEO/GEO 营销机构的 AI 演示文稿生成工具。输入客户 brief，一键生成高档提案级 PowerPoint，支持预览、下载与在线修改。</p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="/">打开应用</a>
       <a class="btn btn-ghost" href="#quickstart">快速开始</a>
